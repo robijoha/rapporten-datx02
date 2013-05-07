@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc} %UTF8 stöd så att jag kan skriva åäö
 \usepackage[swedish]{babel}
-
+\usepackage{hyperref}
 
 \begin{document}
 
@@ -182,17 +182,223 @@ NFC-stacken är uppbyggd av ett antal protokoll som sträcker sig i stort sett �
 
 \paragraph{NDEF}
 
+\textit{(NFC Data Exchange Format)}[källa] är särskilt utformat för att kunna kapsla in applikationsdata på ett effektivt sätt med minimal overhead. NDEF meddelanden byggs upp av \texttt{records}, vilket kan liknas vid sidor i en bok, där boken utgör NDEF meddelandet. Meddelandet kan bestå av ett obegränsat antal records som alla kan bära på olika sorters data.  
 
-\paragraph{SNEP}
+När en applikation önskar sända data över en NFC-länk, kapslas datan in i ett NDEF meddelande. Beroende på datans storlek och struktur skapas varierande mängd records som tillsammans bildar ett NDEF meddelande. Meddelandet överförs sedan till målenheten som tar emot och behandlar det. NDEF garanterar inte att leverans av data är tillförlitlig och specificerar således inte vad målenheten skall göra vid mottagandet av ett felaktigt utformat NDEF meddelande. Detta lämnas till brukande applikationer att komplettera med datagarantier och felhantering som gemensamt brukar kallas QOS (Quality Of Service).
 
+%Bild
+%Bildtext: Ett NDEF meddelande består av en eller flera  records.
+
+Varje record utformas efter en fördefinerad struktur och består av ett antal fält. Det första fältet är en header, som sedan följs av type length, payload length, ID length, type, ID och till sist payload.
+
+%Bild
+%Bildtext: Record layout.
+
+\begin{itemize}
+\item \textbf{Header.} En record header är en byte lång där varje bit har olika betydelser.
+\begin{itemize}
+\item Den första biten är MB som är en förkortning av message begin vilken indikerar att detta är den första record i NDEF meddelandet. Denna bit är ettställd i första record, nollställd i övriga.
+\item Den andra biten är ME som är en förkortning av message end vilken indikerar att detta är sista record i NDEF-meddelandet. Denna bit är endast ettställd i sista record, nollställd i övriga.
+\item Den tredje biten är CF som är en förkortning av chunk flag vilken och indikerar att NDEF-meddelandet är chunked. Chunk-mekanismen tillåter att ett stort datapaket delas upp över flertalet record. Denna mekanism kommer inte att behandlas i denna text då den utvecklade mjukvaran inte nyttjar detta.
+\item Den fjärde biten är SR som är en förkortning av short record vilken används då en mindre mängd data skall överföras. När SR biten är ettställd minskas mängden payload length fält från 4 till 1.
+\item Den femte biten är IL vilken indikerar huruvida ID length fältet existerar i record.
+\item De sista bitarna, bit 6 till 8, bildar TNF vilken är en förkortning av type name format och definerar strukturen av type-fältet i record.
+\end{itemize}
+\item \textbf{Type Length.} Definerar hur många bytes som utgör Type-fältet.
+\item \textbf{Payload length 0-3.} Varje delfält i payload är en byte stor vilket ger payload length fältet en total storlek på 4 bytes. Payload length indikerar storleken på payload fältet som huserar applikationsdatan. I en record med SR nollstäld kan payload- fältet vara  $8*2^8$ bytes stort, det vill säga 4,29 gigabytes. Med SR ettställd kvarstår enbart ett payload lenght-fält vilket ger  payload-fältet en maximal storlek på 255 bytes.
+\item \textbf{Type.} Detta fält definerar vilken typ av data som payload-fältet innehåller. Kraven vad gäller struktur och kodning som specificerats av TNF fältet i header måste följas. Värdet på detta fält kan underlätta behandlingen av applikationsdatan hos målenheten, dock specificeras det inte hur behandlingen sker utan det är upp till applikationen att implementera.
+\item \textbf{ID.} Värdet på detta fält är unikt och utgör en unik identiferare kallad URI. Records kan således skiljas åt genom att studera värdet av URI och NDEF garanterar att detta nummer är unikt genom att tillhandahålla en generator.
+\item \textbf{Payload.} Detta fält huserar applikationsdata.
+\end{itemize}
+Nedan ges ett exempel på ett NDEF-meddelande som kommer att följa med till andra avsnitt som behandlar NFC-stacken.
+
+(Använd referens istället för nedan!!!!!!!!!!!!!!!!!!!!!!!)
+
+%bild
+
+\paragraph{SNEP} 
+(Simpel NDEF exchange protocol)[källa] är det protokoll i NFC-stacken som hanterar utbytet av NDEF-meddelanden. SNEP är ett så kallat request/response protokoll, en klient skickar en SNEP-förfrågan till en server som, beroende på förfrågans innehåll, returnerar ett passande svar om det erfodras.
+
+\subparagraph{Förfrågningar}
+SNEP har specificerat förfrågningens utseende som följer.
+
+%bild
+
+\begin{itemize}
+\item \textbf{Version.} Detta fält definerar vilken version av SNEP som förfrågan bygger på. Versionsfältet är indelat i två delfält kallat Major och Minor om 4-bit vardera där Major huserar heltalet av versionsnummret och Minor huserar decimaldelen av versionsnummret. För att en kunna genomföra en SNEP session måste klient och server förstå varandra och deras förmåga att förstå varandra avgörs av versionsfältet. Vid mottagande av en SNEP förfrågan kontrollerar servern versionsnumret. Stämmer numret helt överens med den version som servern brukar kan SNEP sessionen fullbordas. Stämmer Major delen men inte Minor är det möjligt att slutföra sessionen om servern anpassar sig efter klienten. Skiljer sig Major delen kan sessionen inte genomföras och servern ger avslag.
+\item \textbf{Request.} Request - fältet är 8 bitar stort och anger vilken typ av förfrågan det rör sig om. Fältet innehåller koder som alla är förfrågningsrelaterade. Olika förfrågan erfodrar olika svar från servern.
+\item \textbf{Length.} Detta fält anger hur många bytes som utgör informationsfältet. Length-fältet är 4 bytes långt vilket resulterar i att informationsfältet som störst får vara 4.29 gigabytes.
+\item \textbf{Information} Innehållet i detta fält beror på innehållet i Request-fältet dvs vilket sorts förfrågan det är. I regel är det ett NDEF meddelande som huseras i information-fältet.
+\end{itemize}
+
+De förfrågningar en klient kan begära från en server är Continue, Get, Put samt Reject. De två vanligaste förfrågninarna och de vilka är av relevans för projektet är Put och Get vars betydelse och användning förklaras nedan:
+
+\textbf{Put.} En Put-förfrågan har hexadecimal kod 0x02. Klienten ber servern att ta emot det inkapslade NDEF meddelandet och inget svar erfodras av servern.  Put-förfrågan följer den generella utformningen av ett SNEP förfrågan:
+
+%bild
+
+\textbf{Get.} En Get-förfrågan har hexadecimal kod 0x01. Klienten ber servern att returnera information inkapslat i ett NDEF meddelande. Vilken information som klienten vill få från servern specificeras i NDEF-meddelandet som huseras i Get-förfrågans information-fält. 
+
+%bild
+
+Get-förfrågan skiljer sig från den generella förfrågningsstrukturen. Ytterligare ett fält förekommer, Acceptable Length, vars betydelse är att det anger hur stort NDEF-meddelandet i svarsmeddeleandet maximalt får vara. Acceptable length-fältet är 4 bytes vilket gör Get-förfrågan större än en generell förfrågan.
+
+\subparagraph{Svarsmeddelanden}
+SNEP har också specificerat svarets utseende:
+
+%bild
+
+Fälten i svaret fyller samma funktion som i förfrågningen men med mindre skillnader.
+
+\textbf{Response.} Fyller samma funktion som Request-fältet. Dock innehåller denna andra koder som alla är av svarstyp.
+
+SNEP svar följer ganska sällan det fördefinerade utseendet. Det är enbart svar på Get-förfrågningar som fullt ut följer det generella utseendet hos ett svar. Vanligt förekommande svar är följande.
+
+\begin{itemize}
+\item \textbf{Success.} Detta svar indikerar att servern klarat av att genomföra klientens Get eller Put förfrågan. Utformningen på Success-svaret skiljer sig beroende på om det ges som svar på en Get eller Put förfrågan. I fallet Get följer svaret den generella utformningen med response satt till 0x81 vilket indikerar success. I information-fältet huseras NDEF-meddelandet som ges som svar på Get-förfrågan. I fallet Put sätts response till 0x81, men informations-fältet närvarar ej.
+\item \textbf{Not found.} Detta svar ges om servern inte klarar av att returnera önskat svar till klienten. Svarskoden är 0xC0 och inget information-fält förekommer.
+\item \textbf{Bad request.} Ges om förfrågningen inte följer fördefinerat utseende. Svarskoden är 0xC2 och inget information-fält förekommer.
+\item \textbf{Not implemented.} Detta svar ges om servern inte stödjer den funktionaliet som klienten ber om i förfrågan. Detta svar lämpar sig väl om felaktig request-kod angivits i förfrågan. Inget information-fält förekommer.
+\item \textbf{Unsupported version} Ges då klientens SNEP version inte stämmer överens med vad servern kan hantera. Major-delen av version-fältet skiljer sig åt alternativt klarar servern inte av att överbygga de skilnader som olika Minor-värden medför. Inget information-fält förekommer.
+\end{itemize}
+
+Alla NFC-enheter har som krav att ha en SNEP-server process körandes. På så vis garanteras att all SNEP kommunikation behandlas. Denna garanti förenklar för både ovanliggande applikationslager som underliggande LLC-lager.
 
 \paragraph{LLCP}
+LLCP(Logical Link Control Protocol)[källa] är protokollet som sköter samtliga datalänkar med andra NFC enheter. För att öka överskådligheten hos protokollet har det delats upp i fyra centrala delar: Media access mappning, länkhanteraren, förbindelselös transport och förbindelseorienterad transport. NFC-stacken ser med dessa delar ut som figuren nedan visar.
+
+%bild
+
+\subparagraph{Media access mappning}
+Knyter samman ovanliggande protokoll med de RF-protokoll, vilka styr tekniken som står för den faktiska överföringen av data mellan två NFC enheter. 
+
+\subparagraph{Länkhanteraren}
+Detta är en process som styr all NFC-kommunikation och körs på samtliga enheter som stödjer NFC. Länkhanteraren serialiserar all kommunikation till och från NFC-enheter samt kan hantera flera parallella datalänkar och sköta övervakningen av deras aktuella tillstånd.
+
+Ytterligare en viktig funktion som länkhanteraren fyller är att genomföra ett så kallat symmetriförfarande, vilket gör datakanalerna asynkront balanserade. Eftersom NFC är halvt duplex, dvs kommunikation kan ske i båda riktningar men endast en part i kommunikationen får sända samtidigt, måste länkhanteraren hålla reda på vem som har rätten att sända. Under ett normalt utbyte åstadkommes en balans i kommunikationen genom att parterna sänder en LLCP-ram var. Om endera part har rätten att sända, men inte har något att sända, genomför länkhanteraren symmetriförfarandet genom att skicka en speciell LLCP-ram (SYMM) och rätten att sända överlämnas. Symmetriförfarandet gör det möjligt att upptäcka länkförluster som uppkommer av att t.ex kommunikationsavståndet blivit för stort. Om en part i kommunikationen förs utom räckhåll upptäcks detta genom att all form av svar uteblir, dvs varken en normal ram eller en SYMM-ram når målet.
+
+LLCP erbjuder två alternativa transporttjänster till det ovanliggande applikationslagret, förbindelseorienterad transport och förbindelselös transport.
+
+\subparagraph{Förbindelselös transport}
+Förbindelselös transport skickar onumrerade datapaket och ger inga garantier till sändande applikation att data tas emot av mottagaren. Mindre kontroll av datatrafiken leder till minskad overhead och därigenom till en snabbare transport. Denna typ av transport lämpar sig således för applikationer som lägger stor vikt på snabbhet och som inte kräver några transportgarantier alternativt implementerar dessa själv. En datalänk av denna sort kallas för logisk datalänk och karaktäriseras av addresserna som den sändande (SSAP) och motta applikationen (DSAP) använder.
+
+\subparagraph{Förbindelseorienterad transport}
+Förbindelseorienterad transport skickar numrerade datapaket och garanterar applikationer säker leverans av data men till en kostnad av ökad overhead. Förbindelseorienterad transport lämpar sig för applikationer som ställer högre krav på säkerhet än snabbhet. Två för NFC centrala protokoll, SNEP samt NPP, använder denna transportmetod.
+
+En datalänk av denna typ kallas för uppkoppling. En uppkoppling karaktäriseras av SSAP och DSAP men också ett virtuellt tillstånd som bestäms av fyra stycken numeriska variabler vars olika värden definerar tillståndet. Samtliga variabler kan anta ett värde 0-15 (modulo 16) och syftar till att garantera säker transport av data. Denna mekanism kallas också för ACK från engelskans aknowledgement.
+
+\begin{itemize}
+\item \textbf{VS} Första variabeln, sändvariabeln. VS står för hur många numrerade paket, även kallat ramar, som har skickats från enheten över aktuell uppkoppling.
+\item \textbf{VSA} Andra variabeln, sändbekräftelsevariabeln. VSA anger senast mottagna numrearad ram som målenheten tagit emot.
+\item \textbf{VR} Tredje variabeln, mottagningsvariabeln. VR indikerar vilket nummer som nästa numrearad ram länkhanteraren väntar på att ta emot på aktuell uppkoppling.
+\item \textbf{VRA}Fjärde och sista variabeln. VRA står för senast sända VR i en numrerad ram.
+\end{itemize}
+
+Utöver dessa variabler håller också länkhanteraren reda på lokalt mottagningsfönster RWL och mottagningsfönstret i målenheten RWR som båda står för hur många numrerade ramar som får skickas mellan enheterna utan att VSA uppdateras. Att VSA inte behöver uppdateras efter varje sändning syftar till att minska behovet av att skicka bekfäftelseramar och overheaden på uppkopplingen minskas.
+
+Ack mekanismen går till på så vis att VS och VR skickas med i varje numrerad ram. VRA sätts till det senast sända VR numret. Vid mottagande av en numrerad ram kontrolleras medföljande VR, VSA sätts till VR -1 då VR implicit indikerar att alla tidigare paket tagits emot korrekt. Vid avikelser, eg om VR i en mottagen ram inte stämmer överens med VSA har ett fel uppstått. Uppkopplingen stängs då ner.
+
+vad händer om fel? FMRMRMFMRM ram skickas med massa satans felkoder. Ta med?
+
+\subparagraph{LLCP-meddelanden}
+Eftersom NFC körs på flertalet olika enheter som skiljer sig åt vad avser mjuk- och hårdvara måste LLCP vara flexibelt nog för att kunna köras oberoende av plattform. Denna flexibilitet erhålles genom att specifika parametrar för en datakanal kan förhandlas fram mellan de två kommunicerande LLC-processerna. Viktiga parametrar som är förhandlingsbara är MIU och LTO. 
+
+MIU är en förkortning av Maximum Information Unit och indikerar hur stor ett datapaket maximalt får vara som skall skickas på datalänken. Detta tillåter enheter med begränsade databuffertar att bruka LLCP. Om denna parameter utelämnas i förhandlingen antags ett standardvärde på 128 byte. 
+
+LTO står för Link time Out och indikerar hur länge en länk kan vara inaktiv innan den betraktas som förbrukad och stängs ner. Genom att anpassa LTO kan enheter med låg beräkningskapacitet använda LLCP och kommunicera via NFC, vilket är fallet för ATMEL baserade Arduino-plattformar. Denna parameter utbytes efter att en datalänk etablerats alternativt innan om NFC-enheterna stödjer detta.
+
+LLCP datapaket för förbindelseorienterad transport: 
+
+%bild
+
+\begin{itemize}
+\item \textbf{SAP:} Förkortning av Service Accsess Point och används som addresser vid kommunikation mellan två LLC processer. SAP kan liknas vid en brevlåda i vilken applikationer lämnar meddelanden (data) som den önskar att överföra till en applikation som kör på målenheten. Till varje SAP hör exakt en applikation. 
+\item \textbf{DSAP:} Detta fält utgör adressen som addministreras av mottagar LLC vilken sändaren önskar att upprätta en kommunikation-session med. Skall användas som SSAP när ett eventuellt svar ges på det mottagna datapaketet.
+\item \textbf{SSAP:} Anger vilken SAP som applikationen blivit tilldelad skickar från. Skall användas som DSAP när ett eventuellt svar ges på det mottagna datapaketet.
+\item \textbf{PTYPE:} Detta fält anger vilken sorts datapaket det är och formen på den. Alla datapaket är inte utformade  på exakt samma sätt då de är avsedda för olika ändamål.
+\item \textbf{Sequence:} Detta fält är indelat i två stycken underliggande fält. N(S) är här samma nummer som VS. N(S) innehåller således en siffra 0-15 som visar vilket sändnummer ramen har den lokala LLC processen. N(R) är samma som VR. N(R) innehåller alltså en siffra 0-15 som visar vilket nummer som den lokala LLC processen väntar på att ta emot. Sequence-fältet finns enbart med i de ramar som är numrerade. Sekvensnumret används i LLC protokollets ACK mekanism.
+\item \textbf{Information:} Innehåller data från ovanliggande lager, t.ex SNEP eller NPP som i sin tur kapslar in applikationsdata. Alternativt kan informationsfälltet innehålla LLC specifika parametrar. Vad informations-fältet innehåller kan utläsas av PTYPE-fältet.
+\end{itemize}
+
+Nedan följer ett urval av de typer av datapaket vilka anses vara relevanta för projektet.
+
+\textbf{Connect}
+
+%bild
+
+Denna ram används när en NFC-enhet vill etablera en uppkoppling till en annan enhet. DSAP sätts till en välkänd SAP, som t.ex 0x04 vilket indikerar att sändaren vill etablera en uppkoppling med SNEP-servern som kör på målenheten. Alternativ kan SSAP sättas till 0x01 vilken indikerar att målenheten vid mottagande av denna connect-ram skall köra service discovery protocol (SDP) för att hitta en lämplig SAP. SSAP sätts till det värde applikationen som vill utväxla data över NFC blivit tilldelad. Observanta läsare lägger märke till att sequence-fältet inte finns i en Connect-ram. Detta beror på att en Connect-ram är onumrerad, vilket är fallet för många LLCP-ramar. Informationsfältet specificeras till att innehålla datalänkspecifika parametrar. Genom att undersöka PTYPE-fältet kan mottagaren utläsa vilka fält som skall närvara och vad dess innehåll betyder.
+
+\textbf{Connection Complete}
+
+%bild
+
+Denna ram skall ges som svar på en Connect-ram om en uppkoppling kan upprättas. DSAP sätts till Connect-ramens SSAP värde. SSAP sätts antingen till det värde som SDP returnerat, eller till det fördefinerade värdet som sändaren angav i DSAP. Precis som Connect-ramen är denna ram onumrerad och dess informationsfällt innehåller datalänks-specifika parametrar.
+
+\textbf{DM}
+
+%bild
+
+Denna ram ges som svar på en Connect-ram när en uppkoppling inte kan etableras. Ramens betydelse är att LLC processen som skickar den inte längre lyssnar på uppkopplingen, den är logiskt avslutad. Anledningen till att uppkopplingen blivit avslutad ges i informations-fälltet. Ramen används också vid avslutande av uppkopplingen och skickas då som svar på en DISC-ram.
+
+\textbf{Information}
+
+%bild
+
+När utbytet av Connect-ramen och CC-ramen genomförts är uppkopplingen etablerad. Utbytet av applikationsdata kan inledas. Informations-ramen är ramen som är ämnad för att överföra data mellan två NFC-enheter. För att kunna upptäcka eventuell dataförlust är denna ram numrerad. Informationsfältet innehåller i detta fall data från ovanliggande applikationer.
+
+\textbf{Symmetry}
+
+%bild
+
+Denna ram används i den tidigare beskrivna symmetri-proceduren för att undvika länk-timeout under pågående kommunikation. När en NFC-enhet har exklusiv rätt att skicka data men saknar något att skicka och önskar bibehålla datalänken genomförs symmetri-proceduren under vilken denna ram spelar en central roll.
+
+%bild
+%bildtext
+
+Denna ram används för att indikera att föregående frame togs emot korrekt när ingen nyttig data kan skickas. Detta är således LLC protokollets dedikerade ACK-ram.
+
+\textbf{DISC}
+
+%bild
+
+Används när en av parterna vill stänga ner datalänken. När en LLC process tar emot en ram av denna typ kommer den inte att skicka mer data över denna uppkoppling. Kanalen stängs ned först när sändande part mottager ett svar i form av en DM-ram.
 
 
 \paragraph{RF-protokoll}
+De RF-protokoll vilka det utvalda NFC-chippet PN532 från NXP Semiconductors implementerar är ISO/IEC 18092 NFCIP-1(Near Field Communication – Interface And Protocol)[7] samt ISO/IEC 14443 där det förstnämnda används i samband med kommunikation mot en aktiv NFC-enhet. NFCIP-1 är således det protokoll detta projekt nyttjar hos NFC-chippet och detta specifiserar bland annat moduleringstekniker, kodningsanvisningar, överföringshastigheter, datakollisionskontroll och ram-format. Vidare definierar NFCIP-1 initieringsförfarandet, datautbytesförfarandet (DEP) och deaktiveringsförfarandet vilket används vid aktiv kommunikation.
 
+\subparagraph{Initieringsförfarandet}
+I initieringsförfarandet sänds en \texttt{ATR\_REQ} från den initierande enheten till målenheten, vilken sänder tillbaka en ATR\_RES som svar. En ATR\_REQ och en ATR\_RES är snarlikt uppbyggda och beskrivs samtidigt i följande stycke.
+
+De två första bytesen utav en \texttt{ATR\_REQ} eller \texttt{ATR\_RES}(se figur R) är $0xD4$ och $0x00$, sedan följer NFCID3 vilket är ett slumpartat identifikationsnummer vilket ska vara detsamma under en och samma kommunikations-session. Följande fem bytes i en ATR\_RES respektive fyra bytes i en ATR\_REQ (TO uteblir), är parametrar vilka sköts av NFCIP-1. Slutligen följer så kallade generella bytes vilka inleds med de magiska LLCP nummren och efter dem radas de TLV parametrar(se 3.1.1.3) upp som önskar utbytas i initieringsförfarandet.
+
+%bild
+%bildtext: Figur R. Utförandet av en ATR_RES. Bildkälla LLCP
+
+\subparagraph{Datautbytesförfarande}
+DEP(Data Exchange Protocol) är det protokoll som följs vid utbytandet av data mellan två aktiva NFC enheter på RF-protokolls-nivå och är ett blockorienterat transportprotokoll med inbyggd felhantering och kedjemekanism. Denna mekanism används då den data vilken ska överföras inte får plats i en ram.
+
+\subparagraph{Deaktiveringsförfarande}
+RELEASE/deaktivering
 
 \paragraph{Ett typiskt kommunikationsförlopp}
+\subparagraph{Uppkopplingsupprättande}
+En applikation som körs på en NFC-enhet önskar att skicka data till en annan applikation som körs på en målenhet. För att kunna sända datan måste LLC processen på den sändande enheten först upprätta en uppkoppling genom att skicka en Connect-ram. PTYPE sätts till 0100 vilket indikerar en Connect-ram. Connect-ramens SSAP sätts till den address som aktuell applikation blivit tilldelad. På samtliga NFC-enheter körs en SNEP-server. Denna server använder en välkänd SAP (0x04) och det är denna SAP som används som DSAP i Connect-ramen om applikationsdatan skall utväxlas med SNEP vilket ofta är fallet. 
+
+När LLC processen på målenheten mottager en Connect-ram, och DSAP och SSAP är giltliga, bearbetas de uppkopplingsspecifika parametrana som eventuellt medföljde Connect-ramen. Avsedd applikation, i detta fall SNEP-servern, meddelas om att någon önskar utbyta data. SNEP-servern kontrollerar huruvida datautbyte är möjligt. Är datautbyte inte möjligt meddelas LLC processen som då sänder en DM-ram och uppkopplingen avslutas. Är utbyte av data möjligt meddelas LLC om detta som då skickar en CC-ram. I denna ram sätts DSAP till Connect-ramens SSAP och SSAP till Connect-ramens DSAP. VS, VR, VSA och VRA är samtliga satta till 0.
+
+Vid mottagandet CC-ramen sätter den sändande LLC processen VS, VR, VSA och VRA är samtliga satta till 0. Uppkopplingen är etablerad och kommunikationen övergår i informationsutbytesfasen.
+
+\subparagraph{Informationsutbyte}
+Den lokala LLC processen sänder  iväg den första Informations-ramen som kapslar in applikationsdata. Eftersom det är den första informations-ramen sätts sekvensnummret N(S) och N(R) till 0. Om ytterligare informations-ramar skickas ökas successivt sekvensnummret VS och N(S). Informationsfältet innehåller SNEP-ramen som i sin tur innehåller datan som skall överföras.
+
+Vid mottagande av informations-ramen erhålls den inpackade SNEP-ramen som levereras till SNEP-servern. Om applikationen på målenheten önskar svara kapslar LLC processen på målenheten in svaret i en information-ram med sekvensnummret N(S) = 0 och N(R) = 1. Det första indikerar att detta är den första informations-ramen som målenheten skickar till sändarenheten, det senare indikerar att föregående informations-ram tagits emot korrekt. Om inget svar ges skickar LLC-processen på målenheten en RR-ram med sekvensnummer N(R) = 1 som fyller samma funktion som informationsramen-ramen men utan medföljande data. Datautbytet fortlöper med successivt ökande tillståndsvariabler tills antingen ett fel uppstår eller tills utbytet är färdigt. Båda resulterar i att kommunikationen övergår i uppkopplingsavslutningesfasen.
+
+\subparagraph{Uppkopplingsavslutning}
+Applikationen signalerar den lokala LLC processen om att utbytet är färdigt. Den lokala LLC processen skickar då en DISC-ram till LLC-processen på målenheten. LLC processen på den sändande enheten slutar ta emot samtliga ramar förutom en DM-ram. Vid mottagande av denna DM-ram avslutas uppkopplingen. 
+Vid mottagande av DISC-ramen ses uppkopplingen som avslutad av LLC processen på målenheten. Processen meddelar SNEP-servern om att uppkopplingen stängs ned och skickar en sista DM-ram över uppkopplingen.
+
+Båda parterna ser nu uppkopplingen som avslutad.
 
 
 \subsubsection{Säkerhet}
@@ -201,15 +407,58 @@ Detta avsnitt är baserat på artikeln Strengths and Weaknesses of Near Field Co
 NFC har likt RFID i sitt grundutförande inga inbyggda säkerhetsfunktioner som förhindrar avlyssning, modifiering eller utstörning av kommunikationen. Eftersom kommunikationen är trådlös så kommer avlyssning alltid att vara möjligt och det är upp till sändare och mottagare att kryptera meddelanden om behovet finns. Följande sektioner beskriver hur dessa säkerhetsbrister kan åtgärdas. 
 
 \paragraph{Tjuvlyssning}
+Eftersom NFC är trådlös kommunikation som skickar information via radiovågor kan icke avsedda enheter fånga upp signalerna. För att kunna fånga upp signalerna måste dessa icke-avsedda enheter befinna sig inom kommunikationsräckhåll. På grund av NFCs korta kommunikationsavstånd, kring 10 centimeter, besitter NFC ett inneboende skydd mot avlyssning. Avlysstningsutrustningen måste föras väldigt nära de kommunicerande enheterna vilket underlättar upptäckten av avlyssning. Det finns dock ingen garanti för att signalerna kan fångas upp på betydlig längre avstånd eftersom flertalet parametrar spelar in i hur lång radiovågor kan färdas. Viktigast av dessa är:
+
+\begin{itemize}
+\item Antenn
+\item Effekt
+\item Moduleringsteknik
+\item Omgivning
+\end{itemize}
+
+Vilken antenn som sändare och avlyssnare använder spelar en avgörande roll. Dess dimensioner, utformning och omslutande material är några viktiga faktorer som spelar i hur väl en antenn kan sända och ta emot radiovågor. I t.ex telefoner används en relativt liten spole vilket starkt begränsar signalstyrkan. Vidare så är telefoner i dagsläget ofta innesluten i robust plast eller aluminium som också minskar signalsstyrkan.
+
+Effekten som signalen sänds med avgör hur långt de kan färdas. En signals effekt är starkt sammankopplad med bärvågens amplitud. Ju större amplitud bärvågenvågen har dessto större effekt har signalen. En signal som sänds med hög effekt och följaktligen stor amplitud kan färdas längre än en signal som sänds med låg effekt och som har liten amplitud. 
+
+Moduleringstekniken, enkelt uttryckt hur informationen mönstras in i bärvågen, är också avgörande i sammanhanget. Olika moduleringstekniker medför olika mönster i bärvågen. Hur kraftig modulering som används uttrycks i procent och symboliserar hur tydligt mönster informationen resulterar i. NFC bygger på amplitudmodulering vilket innebär att informationen mönstras in som amplitudvariationer. I detta sammanhang betyder alltså kraftig modulering hur stora amplitudvariationer hos bärvågen som informationen kodas med. Kraftig modulering uppåt 100\% innebär att bärvågen stundom helt släcks ut. Svagare modulering kring 10\% innebär mindre variationer i amplitud hos bärvågen. Det följer att olika moduleringstekniker med olika kraftfull modulering resulterar i signaler med olika egenskaper varav en, hur långt signalen effektivt kan bära information, är relevant i detta sammanhang.
+
+Omgivning spelar en avgörande roll i hur långt radiosignaler kan färdas. Inne i en byggnad finns väggar och andra föremål vilket kraftigt begränsar signalens förmåga att breda ut sig. Bakgrundsbrus, andra radiovågor från telefoner, radioapparater och övrig elektronik, stör ut signalen och minskar signalens räckvidd.
+
+Alla dessa faktorer gör att det inte är känt vilka avstånd avlyssning kan genomföras på, men experiment har genomförts med framgång på avstånd uppåt 10 meter. 
+
 
 \paragraph{Datamodifiering}
+Datamodifiering går ut på att en attackerande enhet försöker störa kommunikationen mellan två NFC-enheter genom att modifiera informationen som skickas mellan enheterna. I sin enklaste form går datamodifiering ut på att störa ut  informationsbärande signaler. Mer avancerad datamodifiering går ut på att modifiera signalerna och därigenom informationen som sänds mellan enheterna på ett sådant sätt informationen fortfarande uppfattas som korrekt av mottagaren. 
 
 \paragraph{"Man in the middle" attack}
-
+En så kallad man in the middle attack går ut på att en illasinnad enhet agerar mellanhand mellan sändare och mottagare. Sändare och mottagare handlar i god tro om att de talar direkt till varandra. Mellanhanden får tillgång till känslig information och har dessutom möjligheten att ändra innehållet av datan. En attack av detta slag är i praktiken omöjligt att genomföra på en NFC länk oavsett om kommunikationen sker mellan två aktiva enheter eller en aktiv och en passiv enhet. För att kunna posera som sändare måste mellanhanden stundom aktivt störa ut data som parterna försöker utbyta med varandra och andra gånger försöka skapa en signal som perfekt överlappar befintlig signal. Minsta avvikelse i utstörningen eller överlappningen resulterar i att datan som skickas över länken blir förvrängd och om de två enheterna aktivt lyssnar på länken kan denna förvräning relativt lätt upptäckas. 
 
 \subsection{Android}
+Enligt Google(2013) är Android världens mest använda operativsystem för mobila enheter. Android är baserat på Linuxkärnan och kan med hjälp av denna stödja många olika typer av hårdvara. Detta gör Android kompatibel med enheter från många olika tillverkare och det är en av anledningarna till att Android har blivit så dominerande. En annan anledning till dominansen är Androids öppna källkod och dess användande av världens mest använda programspråk, Java(Google, 2013).
+
+För att komma igång och skriva applikationer för Android är det några saker en utvecklare behöver känna till. Förutom grundläggande kunskaper inom Java-programmering och mjukvaruutveckling i allmänhet bör en utvecklare av Android-applikationer inneha kunskaper inom i huvudsak tre områden.
+
+Först bör en utvecklare inneha kunskaper om den särskilda livscykel, se bilden nedan, en Android aktivitet har. Livscykeln beskriver de olika tillstånd en aktivitet(fotnot 1) kan befinna sig i samt de olika automatiska anrop som sker då aktiviteten tar sig mellan dem. Livscykeln ger ytterligare funktionalitet men också vissa svårigheter så som att viktiga data måste sparas och återställas när användaren till exempel vrider telefonen.
+
+%bild
+%bildtext: Bilden som är publicerad av Google(2013) beskriver en Android aktivitets livscykel. Särskilt beskriver den de olika statusar den kan befinna sig i samt de metodanrop som sker när den tar sig mellan dem.
+
+För det andra måste en utecklare av Android-applikationer ha kunskap om de Android-specifika API som Google tillhandhåller. Dessa API beskriver de funktioner som är unika för Android-enheter. Där beskrivs t.ex. hur ett användargränssnitt byggs upp, hur en lokal databas sätts upp och hur applikationen kommunicerar med andra applikationer och med omvärden. Särskilt användbart för projektet är det API som specificerar kommunikation över NFC.
+
+Vidare bör en utecklare också känna till filstrukturen hos ett Android-projekt, de specifika verktyg för Android-utveckling som finns samt vilka filer som definierar vad. Exempelvis bör kunskap finnas om vilket xml-dokument som definierar vilken vy och hur inställningar påverkar för såväl en aktivitet som för hela applikationen.
 
 \subsubsection{NFC för Android}
+Google (2013) skriver att Android innehåller funktionalitet för att kommunicera via NFC mot två huvudsakliga enheter. Dels finns det funktionalitet för att skriva och läsa från taggar och dels finns det funktionalitet för att kommunicera mot andra enheter vilka har Android som operativsystem. Eftersom detta arbete nyttjar kommunikation mellan två aktiva NFC-enheter är det den senare som är mest relevant. Detta eftersom det är en Androidenhet mikrokontrollern imiterar.
+
+Vidare skriver Google(2013) att det är möjligt att skicka vilken typ av meddelande som helst via NFC men att de rekommenderar meddelanden av typen NDEF (NFC Data Exchange Format) vilken är den av NFC Forum definierade standarden. När ett NDEF-meddelande tas emot hanteras det av en process som är ansvarig för att den inkommande datan skickas vidare till rätt applikation. En applikation kan deklarera vilka typer av data den kan ta emot i dess manifest.
+
+För den eftersökta kommunikationen mellan två Androidenheter används en teknik vilken kallas Android Beam(Google 2013). Denna teknik bygger på utbyten av NDEF-meddelanden. Android Beam fungerar genom att två enheter förs mot varandra vilket förbereder skickandet av ett meddelande. Sändningen slutförs genom att användaren trycker på skärmen. Tekniken sker alltså utan att någon form av parning(fotnot 1) behövs så som är fallet i andra kommunikationsmetoder, exempelvis Bluetooth (\url{http://www.cs.utexas.edu/~shmat/shmat_fcs07.pdf}).
+
+Google (2013) gör dess Android Beam teknik tillgänglig via ett antal API. Dessa definierar allt ifrån ihopsättande av ett meddelande till hur systemet automatisk förbereder sändande och mottagande. Första steget i användandet av kommunikation via NFC är att få tag på ett objekt som representerar NFC-hårdvaran. Den representeras som ett objekt av typen NFCAdapter. Objektrepresentationen fås via den statiska metoden getDefaultAdapter.
+
+Vidare kan en aktivitet ställas in för sändning genom att en klass implementerar ett särskilt interface, CreateNdefMessageCallback. Implementationen ger klassen förmågan att dynamiskt skapa och skicka meddelanden via Android Beam. För att sedan möjliggöra sändningen från en aktivitet behöver denna välja den implementerade klassen genom att kalla på metoden setNdefPushMessageCallback. För att ta emot meddelandet behövs, förutom att det står angivit i manifestet, metoden onNewIntent skrivas över och i denna behöver meddelandet fångas upp för att sedan tolkas.
+
+fotnot 1 parning eng Pairing
 
 \subsection{Arduino}
 
