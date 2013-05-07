@@ -5,6 +5,20 @@
 
 \begin{document}
 
+\title{NFC Lås}
+
+\date{2012-05-20}
+
+\author{Fredrik Einarsson\\
+		Robin Gabre\\
+		Jonas Hemlin\\
+		Sebastian Karlsson\\
+		Daniel Moreau\\ 
+		Kristofer Tapper\\}
+
+\maketitle
+\newpage
+
 \section*{Förord}
 Denna rapport ingår i ett kandidatarbete utfört vid Institutionen för Data- och informationsteknik, Chalmers tekniska högskola våren 2013. Rapporten beskriver utvecklingen av ett NFC-baserat låssystem bestående av mjukvara till en Androidbaserad mobiltelefon samt en mikrokontroller av Arduino-typ. 
 
@@ -17,6 +31,7 @@ Projektgruppen önskar tacka Lars Svensson för den tid han har lagt ner för at
 In english motherfucker.
 \end{abstract}
 \newpage
+
 \renewcommand{\abstractname}{Sammanfattning}
 \begin{abstract}
 Mobiltelefonen utökas idag ständigt till att klara av att utföra fler och fler uppgifter åt dess användare. De saker vars funktioner nu erbjuds genom dagens mobiltelefoner behövs alltså inte längre tas med. Det här arbetet handlar om att ersätta nyckelknippan genom att ge mobiltelefonen funktionen att låsa upp en dörr, vilket ger att de otympliga nycklarna inte längre behöver tas med.
@@ -29,7 +44,41 @@ fotnot 1: efter upphovsmännen Ron Rivest, Adi Shamir och Len Adleman
 \end{abstract}
 \newpage
 
+\section*{Ordlista/Terminologi}
+\begin{description}
+\item[Aktivitet] En Java-klass som representerar en enstaka fokuserad uppgift. Ses vanligen som en skärm i Android.
+\item[Användare] En person som använder mobilapplikationen.
+\item[Android] Ett öppet mobilt operativsystem för främst smartphones och pekplattor.
+\item[Android beam] En teknologi för att sända data mellan två Androidenheter via NFC.
+\item[API]
+\item[APDU] Application protocol data unit, generell benämning på datapaket.
+\item[Bluetooth]
+\item[Börkrav] Krav som bör ha uppfyllt för en bra produkt
+\item[DEP] Data exchange protocol.
+\item[DSAP] Destination service access point, adress som utgör mål för NFC kommunikation.
+\item[LLCP] Locical link control protocol, det protokoll som dikterar hur NFC kommunikation sköts på länknivå.
+\item[Låsenhet] Den del utav den utvecklade prototypen vilken är integrerad i låset.
+\item[Manifest] Är en fil i ett Androidproject som specificerar globala inställningar för applikationen.
+\item[Material] De fysiska delarna vilken prototypen utgörs av.
+\item[Mobil plånbok] En ansatts till att ersätta plånboken med en applikation i en smart telefon.
+\item[NFC-Forum] En organisation med målet att sprida och utveckla teknologin NFC.
+\item[NDEF] Ett dataformat som specificerar hur data skall skickas och vad det är för data som skickas.
+\item[OSI-modellen]
+\item[RSA] Algoritm som används vid asymmetrisk kryptering.
+\item[SDP] Service discovery protocol, är ett protkoll som används när avsändare inte känner DSAP hos målenhet.
+\item[Server] Är ett datorsystem som har till uppgift att serva andra system.
+\item[Skallkrav] Krav som skall vara uppfyllda i prototypen.
+\item[Smart telefon] En mobil enhet som kan användas både som avancerad mobiltelefon och som handdator.
+\item[SNEP] Simple NDEF exchange protocol. Detta protokoll beskriver utbytet av data vid användning av NFC.
+\item[SSAP] Source service access point. Är den adress som brukande applikation tilldelats vid användandet av NFC.
+\item[Target] Målenhet för NFC kommunikation
+\item[Verktyg] Källkodsbibliotek, utvecklingmiljöer och specifikationer.
+\item[Wifi]
+\end{description}
+\newpage
 
+
+\setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
 \tableofcontents
 \newpage
@@ -151,6 +200,121 @@ Detta avsnitt är baserat på artikeln Strengths and Weaknesses of Near Field Co
 
 NFC har likt RFID i sitt grundutförande inga inbyggda säkerhetsfunktioner som förhindrar avlyssning, modifiering eller utstörning av kommunikationen. Eftersom kommunikationen är trådlös så kommer avlyssning alltid att vara möjligt och det är upp till sändare och mottagare att kryptera meddelanden om behovet finns. Följande sektioner beskriver hur dessa säkerhetsbrister kan åtgärdas. 
 
+\paragraph{Tjuvlyssning}
 
+\paragraph{Datamodifiering}
+
+\paragraph{"Man in the middle" attack}
+
+
+\subsection{Android}
+
+\subsubsection{NFC för Android}
+
+\subsection{Arduino}
+
+\subsubsection{Arduino-specifika källkodsbibliotek}
+
+\subsubsection{NFC för Arduino mha PN532 NFC/RFID Shield}
+
+\paragraph{Generella Kommandon till PN532 NFC/RFID Shield}
+
+\subparagraph{SAMConfiguration}
+
+\paragraph{Kommandon till PN532 NFC/RFID Shield då enheten agerar målenhet}
+
+\subparagraph{TgInitAsTarget}
+
+\subparagraph{TgSetData}
+
+\subparagraph{TgGetData}
+
+\section{Kravanalys och design}
+
+\subsection{Produktkrav}
+
+\subsection{Kommunikationen mellan enheterna}
+
+\subsubsection{Kommunikationsförlopp}
+
+\subsubsection{Meddelandetyper}
+
+\subsubsection{Säker kommunikation}
+
+\section{Material och verktyg}
+
+\subsection{Mikrokontroller}
+
+\subsubsection{Utvecklingsmiljö och programspråk}
+
+\subsubsection{Implementerade och intressant protokoll samt specifikationer}
+
+\subsubsection{Val av källkodsbibliotek för implementation av NFC-stacken}
+
+\subsubsection{ Val av källkodbibliotek för implementation av kommunikationssäkerhet}
+
+\subsection{Mobilapplikation}
+
+\subsubsection{Utvecklingsmiljö och programspråk}
+
+\subsubsection{Använda API:er}
+
+\section{Genomförande}
+
+\subsection{Utveckling av låsenheten}
+
+\subsubsection{RF-protokoll-lagret}
+
+\paragraph{Kontroll av RF-protokollens funktioner}
+
+\subsubsection{Kommunikation mellan Arduino och NFC-sköld}
+
+\subsubsection{LLCP-lagret}
+
+\subsubsection{NPP- eller SNEP-lagret}
+
+\subsubsection{NDEF-lagret}
+
+\subsubsection{Applikationen, den som snurrar i loop()}
+
+\subsection{Utveckling av mobilapplikationen}
+
+\subsection{Utveckling av en prototyp bestående av båda enhterna}
+
+\section{Resultat}
+
+\subsection{Produkten som helhet}
+
+\subsection{Mobilapplikationen}
+
+\subparagraph{Övergripande design}
+
+\subparagraph{Login}
+
+\subparagraph{Main}
+
+\subparagraph{Success och Denied}
+
+\subparagraph{Settings}
+
+\subparagraph{Password}
+
+\subparagraph{Keys}
+
+\subsection{Låsenheten}
+
+\section{Diskussion}
+
+\subsection{Produkten}
+
+\subsection{Arduino}
+
+\subsection{Mobilapplikationen}
+
+\section{Slutsats}
+
+\section*{Referenser}
+
+\section*{Bilagor}
 
 \end{document}

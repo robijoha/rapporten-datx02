@@ -1,15 +1,71 @@
 \select@language {swedish}
-\contentsline {section}{\numberline {1}Inledning}{5}
-\contentsline {subsection}{\numberline {1.1}Syfte}{6}
-\contentsline {subsection}{\numberline {1.2}Utmaningar}{6}
-\contentsline {subsection}{\numberline {1.3}Omfattning}{7}
-\contentsline {section}{\numberline {2}Metod}{8}
-\contentsline {section}{\numberline {3}Teori}{8}
-\contentsline {subsection}{\numberline {3.1}NFC}{9}
-\contentsline {subsubsection}{\numberline {3.1.1}NFC Stack}{10}
-\contentsline {paragraph}{NDEF}{11}
-\contentsline {paragraph}{SNEP}{11}
-\contentsline {paragraph}{LLCP}{11}
-\contentsline {paragraph}{RF-protokoll}{11}
-\contentsline {paragraph}{Ett typiskt kommunikationsf\IeC {\"o}rlopp}{11}
-\contentsline {subsubsection}{\numberline {3.1.2}S\IeC {\"a}kerhet}{11}
+\contentsline {section}{\numberline {1}Inledning}{9}
+\contentsline {subsection}{\numberline {1.1}Syfte}{10}
+\contentsline {subsection}{\numberline {1.2}Utmaningar}{10}
+\contentsline {subsection}{\numberline {1.3}Omfattning}{11}
+\contentsline {section}{\numberline {2}Metod}{12}
+\contentsline {section}{\numberline {3}Teori}{12}
+\contentsline {subsection}{\numberline {3.1}NFC}{13}
+\contentsline {subsubsection}{\numberline {3.1.1}NFC Stack}{14}
+\contentsline {paragraph}{\numberline {3.1.1.1}NDEF}{15}
+\contentsline {paragraph}{\numberline {3.1.1.2}SNEP}{15}
+\contentsline {paragraph}{\numberline {3.1.1.3}LLCP}{15}
+\contentsline {paragraph}{\numberline {3.1.1.4}RF-protokoll}{15}
+\contentsline {paragraph}{\numberline {3.1.1.5}Ett typiskt kommunikationsf\IeC {\"o}rlopp}{15}
+\contentsline {subsubsection}{\numberline {3.1.2}S\IeC {\"a}kerhet}{15}
+\contentsline {paragraph}{\numberline {3.1.2.1}Tjuvlyssning}{15}
+\contentsline {paragraph}{\numberline {3.1.2.2}Datamodifiering}{15}
+\contentsline {paragraph}{\numberline {3.1.2.3}"Man in the middle" attack}{15}
+\contentsline {subsection}{\numberline {3.2}Android}{15}
+\contentsline {subsubsection}{\numberline {3.2.1}NFC f\IeC {\"o}r Android}{15}
+\contentsline {subsection}{\numberline {3.3}Arduino}{15}
+\contentsline {subsubsection}{\numberline {3.3.1}Arduino-specifika k\IeC {\"a}llkodsbibliotek}{15}
+\contentsline {subsubsection}{\numberline {3.3.2}NFC f\IeC {\"o}r Arduino mha PN532 NFC/RFID Shield}{15}
+\contentsline {paragraph}{\numberline {3.3.2.1}Generella Kommandon till PN532 NFC/RFID Shield}{15}
+\contentsline {subparagraph}{SAMConfiguration}{15}
+\contentsline {paragraph}{\numberline {3.3.2.2}Kommandon till PN532 NFC/RFID Shield d\IeC {\r a} enheten agerar m\IeC {\r a}lenhet}{16}
+\contentsline {subparagraph}{TgInitAsTarget}{16}
+\contentsline {subparagraph}{TgSetData}{16}
+\contentsline {subparagraph}{TgGetData}{16}
+\contentsline {section}{\numberline {4}Kravanalys och design}{17}
+\contentsline {subsection}{\numberline {4.1}Produktkrav}{17}
+\contentsline {subsection}{\numberline {4.2}Kommunikationen mellan enheterna}{17}
+\contentsline {subsubsection}{\numberline {4.2.1}Kommunikationsf\IeC {\"o}rlopp}{17}
+\contentsline {subsubsection}{\numberline {4.2.2}Meddelandetyper}{17}
+\contentsline {subsubsection}{\numberline {4.2.3}S\IeC {\"a}ker kommunikation}{17}
+\contentsline {section}{\numberline {5}Material och verktyg}{17}
+\contentsline {subsection}{\numberline {5.1}Mikrokontroller}{17}
+\contentsline {subsubsection}{\numberline {5.1.1}Utvecklingsmilj\IeC {\"o} och programspr\IeC {\r a}k}{17}
+\contentsline {subsubsection}{\numberline {5.1.2}Implementerade och intressant protokoll samt specifikationer}{17}
+\contentsline {subsubsection}{\numberline {5.1.3}Val av k\IeC {\"a}llkodsbibliotek f\IeC {\"o}r implementation av NFC-stacken}{17}
+\contentsline {subsubsection}{\numberline {5.1.4} Val av k\IeC {\"a}llkodbibliotek f\IeC {\"o}r implementation av kommunikationss\IeC {\"a}kerhet}{17}
+\contentsline {subsection}{\numberline {5.2}Mobilapplikation}{17}
+\contentsline {subsubsection}{\numberline {5.2.1}Utvecklingsmilj\IeC {\"o} och programspr\IeC {\r a}k}{17}
+\contentsline {subsubsection}{\numberline {5.2.2}Anv\IeC {\"a}nda API:er}{17}
+\contentsline {section}{\numberline {6}Genomf\IeC {\"o}rande}{17}
+\contentsline {subsection}{\numberline {6.1}Utveckling av l\IeC {\r a}senheten}{17}
+\contentsline {subsubsection}{\numberline {6.1.1}RF-protokoll-lagret}{17}
+\contentsline {paragraph}{\numberline {6.1.1.1}Kontroll av RF-protokollens funktioner}{17}
+\contentsline {subsubsection}{\numberline {6.1.2}Kommunikation mellan Arduino och NFC-sk\IeC {\"o}ld}{18}
+\contentsline {subsubsection}{\numberline {6.1.3}LLCP-lagret}{18}
+\contentsline {subsubsection}{\numberline {6.1.4}NPP- eller SNEP-lagret}{18}
+\contentsline {subsubsection}{\numberline {6.1.5}NDEF-lagret}{18}
+\contentsline {subsubsection}{\numberline {6.1.6}Applikationen, den som snurrar i loop()}{18}
+\contentsline {subsection}{\numberline {6.2}Utveckling av mobilapplikationen}{18}
+\contentsline {subsection}{\numberline {6.3}Utveckling av en prototyp best\IeC {\r a}ende av b\IeC {\r a}da enhterna}{18}
+\contentsline {section}{\numberline {7}Resultat}{18}
+\contentsline {subsection}{\numberline {7.1}Produkten som helhet}{18}
+\contentsline {subsection}{\numberline {7.2}Mobilapplikationen}{18}
+\contentsline {subparagraph}{\IeC {\"O}vergripande design}{18}
+\contentsline {subparagraph}{Login}{18}
+\contentsline {subparagraph}{Main}{18}
+\contentsline {subparagraph}{Success och Denied}{18}
+\contentsline {subparagraph}{Settings}{18}
+\contentsline {subparagraph}{Password}{18}
+\contentsline {subparagraph}{Keys}{18}
+\contentsline {subsection}{\numberline {7.3}L\IeC {\r a}senheten}{19}
+\contentsline {section}{\numberline {8}Diskussion}{19}
+\contentsline {subsection}{\numberline {8.1}Produkten}{19}
+\contentsline {subsection}{\numberline {8.2}Arduino}{19}
+\contentsline {subsection}{\numberline {8.3}Mobilapplikationen}{19}
+\contentsline {section}{\numberline {9}Slutsats}{19}

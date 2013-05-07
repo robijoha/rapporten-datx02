@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.5.6)  6 MAY 2013 19:00
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.5.6)  7 MAY 2013 17:49
 entering extended mode
 **rapport.tex
-(C:\Users\Gabre\Desktop\DATX02\rapport.tex
+(C:\Users\Gabre\Documents\GitHub\rapporten-datx02\rapport.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -266,7 +266,7 @@ File: babel.def 2008/07/08 v3.8m Babel common definitions
 )
 Package babel Info: Making " an active character on input line 90.
 ))
-(C:\Users\Gabre\Desktop\DATX02\rapport.aux)
+(C:\Users\Gabre\Documents\GitHub\rapporten-datx02\rapport.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
 LaTeX Font Info:    ... okay on input line 6.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 6.
@@ -279,50 +279,71 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 6.
 LaTeX Font Info:    ... okay on input line 6.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
 LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 19.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 19.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 19.
  [1
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3] (C:\Users\Gabre\D
-esktop\DATX02\rapport.toc
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3] [4]
+Overfull \hbox (3.53403pt too wide) in paragraph at lines 61--62
+[][]\OT1/cmr/m/n/10.95 Ar en fil i ett Andro-id-pro-ject som spe-ci-fi-ce-rar g
+lo-ba-la in-st[]allningar
+ []
+
+[5] [6] (C:\Users\Gabre\Documents\GitHub\rapporten-datx02\rapport.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <10.95> on input line 3.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 3.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 3.
-)
-\tf@toc=\write3
 
-[4] [5]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 66.
+Overfull \hbox (7.20595pt too wide) in paragraph at lines 24--24
+ [][] []\OT1/cmr/m/n/10.95 Generella Kom-man-don till PN532 NFC/RFID 
+ []
+
+[7])
+\tf@toc=\write3
+ [8] [9]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 115.
+
  ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 66.
- [6] [7]
-[8] [9] [10]
-Overfull \hbox (10.47017pt too wide) in paragraph at lines 152--153
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 115.
+ [10]
+[11] [12] [13] [14]
+Overfull \hbox (10.47017pt too wide) in paragraph at lines 201--202
 []\OT1/cmr/m/n/10.95 NFC har likt RFID i sitt grundutf[]orande inga in-bygg-da 
 s[]akerhetsfunktioner
  []
 
-[11] (C:\Users\Gabre\Desktop\DATX02\rapport.aux) ) 
+[15]
+Overfull \hbox (3.17557pt too wide) in paragraph at lines 252--252
+[]\OT1/cmr/bx/n/10.95 Val av k[]allkodsbibliotek f[]or im-ple-men-ta-tion av NF
+C-stacken 
+ []
+
+[16] [17] [18] [19]
+(C:\Users\Gabre\Documents\GitHub\rapporten-datx02\rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 819 strings out of 493921
- 9331 string characters out of 3147283
+ 828 strings out of 493921
+ 9611 string characters out of 3147283
  67171 words of memory out of 3000000
- 4155 multiletter control sequences out of 15000+200000
- 8205 words of font info for 29 fonts, out of 3000000 for 9000
+ 4162 multiletter control sequences out of 15000+200000
+ 9119 words of font info for 32 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 24i,4n,24p,921b,187s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 2.9/
-fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
-ic/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmsy10.pfb>
-Output written on rapport.pdf (11 pages, 86018 bytes).
+ 24i,6n,24p,921b,225s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmsy10.pfb>
+Output written on rapport.pdf (19 pages, 127540 bytes).
 PDF statistics:
- 54 PDF objects out of 1000 (max. 8388607)
+ 88 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
