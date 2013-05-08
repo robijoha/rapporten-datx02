@@ -226,7 +226,7 @@ SNEP har specificerat förfrågningens utseende som följer.
 
 \begin{itemize}
 \item \textbf{Version.} Detta fält definerar vilken version av SNEP som förfrågan bygger på. Versionsfältet är indelat i två delfält kallat Major och Minor om 4-bit vardera där Major huserar heltalet av versionsnummret och Minor huserar decimaldelen av versionsnummret. För att en kunna genomföra en SNEP session måste klient och server förstå varandra och deras förmåga att förstå varandra avgörs av versionsfältet. Vid mottagande av en SNEP förfrågan kontrollerar servern versionsnumret. Stämmer numret helt överens med den version som servern brukar kan SNEP sessionen fullbordas. Stämmer Major delen men inte Minor är det möjligt att slutföra sessionen om servern anpassar sig efter klienten. Skiljer sig Major delen kan sessionen inte genomföras och servern ger avslag.
-\item \textbf{Request.} Request - fältet är 8 bitar stort och anger vilken typ av förfrågan det rör sig om. Fältet innehåller koder som alla är förfrågningsrelaterade. Olika förfrågan erfodrar olika svar från servern.
+\item \textbf{Request.} Request - fältet är 8 bitar stort och anger vilken typ av förfrågan det rör sig om. Fältet innehåller koder som alla är\\ förfrågningsrelaterade. Olika förfrågan erfodrar olika svar från servern.
 \item \textbf{Length.} Detta fält anger hur många bytes som utgör informationsfältet. Length-fältet är 4 bytes långt vilket resulterar i att informationsfältet som störst får vara 4.29 gigabytes.
 \item \textbf{Information} Innehållet i detta fält beror på innehållet i Request-fältet dvs vilket sorts förfrågan det är. I regel är det ett NDEF meddelande som huseras i information-fältet.
 \end{itemize}
@@ -461,96 +461,411 @@ Vidare kan en aktivitet ställas in för sändning genom att en klass implemente
 fotnot 1 parning eng Pairing
 
 \subsection{Arduino}
+En Arduino är en mikrokontroller, det vill säga en mikroprocessor med tillhörande nödvändig elektronik kopplad till ett flertal in- och utgångar, vilken främst är avsedd för hobbymarknaden. Arduino-plattformen har framställts med användarvänlighet i fokus(Arduino, 2013) och har en stor community online. All den kod vilken bygger upp hela arduino-plattformen är licenserad under antingen GNU General Public License eller GNU Lesser General Public License(Arduinos källkod, 2013) vilket bland annat ger möljlighet för ett arbete av detta slaget att nyttja all denna kod. 
+
+Flertalet modeller i olika storlekar och prestandaklasser finns men en av de vanligare och den modellen vilken kommer beskrivas mer ingånde är Arduino Mega 2560 R3. Denna mikrokontroller baseras på mikroprocessorn ATmega2560 från Atmel(Arduino, 2013) med klockhastigheten 16 MHz. Vidare kan läsas på Arduinos(2013) produktsida att denna enhet innehar 16 analoga ingångar, 54 digitala in/utgångar, 4 UART(Universal Asynchronous Receiver/Transmitter), USB-kontakt, ström-jack, återställningsknapp och en ICSP(In-Circuit Serial Programming) header. Minnesstorleken på flash-minnet är 256 KB, SRAM(Static Random-Access Memory) är 8 KB stort och 4 KB EEPROM(Electrically Erasable Programmable Read-Only Memory) finns.
+
+En mikrokontroller av arduino-typ kan köras med en bootloader(Arduino, 2013) vilket är ett litet förinstallerat program och på Arduino Mega 2560 R3 utgör den omkring 8 KB av flash-minnet. En bootloader är grovt beskrivet ett väldigt litet operativsystem vilken gör exekveringen möjlig av den kod som användaren av mikrokontrollern har laddat in i minnet. 
+
+Arduino-plattformens utvecklingsmiljö är enkel i sitt utförande och programspråket som används är C/C++.  Utvecklingsmiljön innehåller allt som behövs för att en användare ska kunna skriva sin kod för att sedan kompilera och för att slutligen ladda upp koden mot vald Arduino-modell. Tyvärr erbjuder inte utvecklingsmiljön många funktioner där de mest avändbara är auto-formatering och möjligheten att inkludera externa arduino-specifika bibliotek. 
+
+Avsaknad av debug! Och eftersom den är så satans enkel har du ingen vidare insyn i hur koden kompileras och vad som faktiskt läggs på kontrollern.
 
 \subsubsection{Arduino-specifika källkodsbibliotek}
+Ett flertal källkodsbibliotek finns till användarens hjälp och nästan alla dessa bibliotek är fokuserade på kommunikation mot kringenheter. Andra bibliotek finns men är då skrivna av användare. De bibliotek som tas upp i detta avsnitt är de bibliotek vilka har använts för implementationen av låsenheten.
+
+För att kommunicera mot kringenheter via kommunikationsprotokollet I2C[källa] behövs källkodsbiblioteket WIRE. Om Arduino-modellen Arduino Mega 2560 R3 används kommer biblioteket använda pinne nummer 20 och 21 för SDA(Serial Data Line) respektive SCL(Serial Clock Line). Dessa pinnar är kopplade till motsvarande pinnar på kringenheten. Att förstå och använda biblioteket är relativt trivialt och tas ej upp i denna text.
+
+%skriv om källkodsbiblioteket AVR/SLEEP
 
 \subsubsection{NFC för Arduino mha PN532 NFC/RFID Shield}
+För att en Arduino ska kunna nyttja kommunikation via NFC krävs att en så kallad sköld vilken har NFC-funktionallitet är ansluten till enheten. En sköld av det beskrivna slaget är Adafruits PN532 NFC/RFID Shield som baseras på NFC-chippet PN532 från företaget NXP Semiconductors. 
+
+Skölden kommunicerar mot en mikrokontroller med teknikerna SPI[källa], HSU[källa] eller I2C[källa]. För teknikerna SPI och I2C finns bibliotek att tillgå, skrivna av Adafruit, vilka kontrollerar kommunikationen mellan skölden och mikrokontrollern. Vidare ger också biblioteken ytterligare funktionallitet då manipulation av taggar erbjuds. Dock innehåller biblioteken inte stöd för kommunikation mot en aktiv NFC-enhet(se 3.1 NFC) vilket är det detta arbete önskar nyttja.
+
+De protokoll som PN532 NFC/RFID Shield har implementerade är de RF-protokoll vilka är de som finns längst ner i NFC-stacken(NXP, 2007). Dessa protokoll möjliggör den faktiska överföringen av data och det implementerade protokollet med högst abstraktionsnivå är DEP(Data Exchange Protocol) vilket skriv lite om DEP
+
+För att kontrollera PN532 NFC/RFID Shield finns ett stort antal kommandon vilka beskrivs utförligt i användarmanualen till PN532(NXP, 2007) och de beskrivningar vilka görs i detta avsnitt härör från detta dokument. Ett kommando skickas över vald kommunikationsteknik inkappslad i en ram vilken är specifierad enligt figur X(NXP, 2007). Denna ram inkappslar också de svar som fås från PN532 NFC/RFID Shield. Om inget annat anges består en ruta i detta avsnitts figurer utav en byte.
+
+%bild
+%bildtext: figur X. Kommando- och svars-ram Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.
+
+\begin{itemize}
+\item Inledande bytes. Den byte som inleder en kommando-ram innehåller $0x00$.
+\item Startkod för paket. Den består av två bytes innehållande \texttt{0x00} respektive $0xFF$.
+\item Paketlängd. En byte vilken indikerar hur många bytes datafältet innehåller, det vill säga från TFI till och med PDn.
+Kontrollsumma för paket. En byte innehållande en kontrollsumma vilken satisfierar vilkoret LEN +LCS = $0x00$.
+\item Specifik PN532 ramidentifierare. En byte vilken indikerar om PN532 NFC/RFID Shield är sändare eller mottagare.
+\begin{itemize}
+\item \texttt{0xD4} anger att PN532 NFC/RFID Shield är mottagare av ramen.
+\item $0xD5$ anger att PN532 NFC/RFID Shield är sändare av ramen.
+\end{itemize}
+\item Data. Paketlängd-1 bytes av paketdata vilka sträcker sig från PD0 till PDn. Maximalt kan 262 bytes skickas i en ram till skölden.
+\item Kontrollsumma för data. En byte innehållande en kontrollsumma vilken satisfierar vilkoret TFI + PD0 + PD1 + ... + PDn + DCS = 0x00.
+\item Avslutande bytes. Den byte som avslutar en kommando-ram innehåller 0x00.
+\end{itemize}
+
+(fotnot 1) De bytes som är efter den avslutande byten eller innan den inledande byten kan vara godtyckligt många och ha godtyckliga värden så länge följden 0x00 0xFF inte förkommer.
+
+De kommandon som kan nyttjas grupperas i fyra grupper, generella kommandon, RF-kommunikation, initiator och target. I gruppen generella kommandonfinns kommandon som diagnoserar NFC-chipet, läser och skriver till register samt konfigurerar skölden i viss mån. Gruppen RF-kommunikation huserar två kommandon vilka konfigurerar radio-fältet respektive används för radio-fälts reglering. Tredje gruppen, inintiator, innehåller de kommandon vilka används då PN532 NFC/RFID Shield agerar initiator till NFC-kommunikationen, och den sista gruppen omfattar de kommandon vilka används då PN532 NFC/RFID Shield är målenhet för NFC-kommunikation.
+
+Då PN532 NFC/RFID Shield har mottagit en kommando-ram korrekt sänds en ACK-ram tillbaka till sändaren vilken är uppbyggd enligt figur Y.
+
+%bild
+%bildtext: figur Y. Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.
+
+Om en kommando-ram inte mottages korrekt av PN532 NFC/RFID Shield eller om ett fel på applikationsnivå inträffar skickas en ERROR-ram till mikrokontrollern vilken är uppbyggt enligt figur Z. är detta rätt!?
+
+%bild
+%bildtext: figur Z. Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.
+
+De kommandon som beskrivs i denna text är de vilka varit till nytta för utvecklingen av prototypen och de återstående kommandona tas ej upp, bland annat utelämnas kommandogrupperna RF-kommandon och initiator-kommandon helt då de ej nyttjas. De figurer vilka beskriver 
 
 \paragraph{Generella Kommandon till PN532 NFC/RFID Shield}
+Dessa kommandon utför läsningar och skrivningar till register, diagnosering utav NFC-chipet, viss konfiguration av skölden samt att skölden kan ställas i olika vilolägen. 
 
 \subparagraph{SAMConfiguration}
+När PN532 NFC/RFID Shield startas upp befinner sig NFC-chippet i läget LowVbat, genom att anropa kommandot SAM(Security Access Module)Configuration(fotnot 1) vaknar skölden och går in i ett läge där den behandlar också alla andra kommandon. Kommandot SAMConfiguration är uppbyggt enligt figur T, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. 
+
+%bild alt. tabell
+
+\begin{itemize}
+\item 0xD4 anger att PN532 NFC/RFID Shield är mottagare av ramen.
+\item 0x14 är den kommandospecifika koden.
+\item Läge. Här väljs hur SAM(Security Access Module) ska användas. Då PN532 NFC/RFID Shield inte har någon SAM väljs normalt läge då en SAM inte används, genom att ange 0x01.
+\item Timeout. Om SAM inte används sätts denna parameter till 0x00.
+\item IRQ, frivilligt fält. Om en IRQ-lina ska användas för smidigare kommunikationen mot en Arduino anges 0x01, annars 0x00.
+\end{itemize}
+
+Svarsmeddelandet till SAMConfiguration är uppbyggt enligt figur S, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Det ända som svaret innehåller, förutom TFI,  är den kommandospecifika svarskoden 0x15.
+
+%bild
+%bildtext: figur S.
+
+fotnot 1: Om SAMConfiguration används för att skölden ska gå ur LowVbat läget måste Mode sättas till 0x01.  
 
 \paragraph{Kommandon till PN532 NFC/RFID Shield då enheten agerar målenhet}
 
+Då PN532 NFC/RFID Shield är målenheten för kommunikationen finns ett antal kommandon som är dedikerade för detta ändmål. Dessa kommandon ger bland annat funktionalitet i form av att konfigurera skölden som en målenhet och att sända samt ta emot data.
+
 \subparagraph{TgInitAsTarget}
+För att konfigurera PN532 NFC/RFID Shield som en målenhet anropas kommandot TgInitAsTarget enligt figur D, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. 
+
+%bild
+
+\begin{itemize}
+\item 0xD4 anger att PN532 NFC/RFID Shield är mottagare av ramen.
+\item 0x8C är den kommandospecifika koden.
+\item Läge. Val av operationsläge. 
+\begin{itemize}
+\item bit 0 satt indikerar att skölden endast kommer påbörja kommunikation mot passiva NFC-enheter.
+\item bit 1 satt indikerar att skölden följer protokollet DEP() och kommer endast påbörja kommunikation om en ATR\_REQ ram mottas.
+\item bit 2 satt indikerar att skölden emulerar en tagg av typen ISO/IEC14443-4 och endast kommer påbörja kommunikation om en RATS ram mottas.
+\end{itemize}
+\item Mifare parametrar, 6 bytes. Parametrar vilka behöver definieras då kommunikation mot en passiv NFC-enhet i 106 Kb/s önskas.
+\item FeliCa parametrar, 18 bytes. Parametrar vilka behöver definieras då kommunikation mot en passiv NFC-enhet i 212/424 Kb/s önskas.
+\item NFCID3t, 10 bytes, används som svar, ATR\_RES, om ett ATR\_REQ mottas.
+\item LEN Gt anger hur många bytes, max 47, Gt består av. 
+\item Gt, LEN Gt bytes, anger de generella bytes som används i ATR\_RES.
+\item LEN Tk anger hur många bytes, max 48, Tk består av.
+\item Tk, LEN Tk bytes, anger de historiska bytes vilka används i ATS när skölden emulerar en tagg av typen ISO/IEC14443-4.
+\end{itemize}
+
+Svarsmeddelandet till TgInitAsTarget är uppbyggt enligt figur R, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Svaret innehåller TFI, den kommandospecifika svarskoden 0x8D, en byte vilken indikerar i vilket läge skölden blivit konfigurerad samt det första meddelandet från initiatorn.
+
+%bild
 
 \subparagraph{TgSetData}
+Detta kommando används då data önskas skickas enligt DEP och är uppbyggt enligt figur E, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. Förutom den kommandospecifika koden innehåller ramen de bytes vilka önskas skickas. Observera att maximalt 262 bytes kan skickas åt gången och om fler ska skickas måste också kommandot TgSetMetaData användas.
+
+%bild
+%bildtext: Figur E.
+
+Det svar som anhålles från skölden är uppbyggt enligt figur W, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Förutom att svaret innehåller den kommandospecifika svarskoden 0x8F samt TFI finns också ett statusfält vilket indikerar om sändningen utfördes korrekt, vilket indikeras med 0x00, eller inte.
+
+%bild
+%bildtext: Figur W.
 
 \subparagraph{TgGetData}
+Detta kommando används då data önskas hämtas enligt DEP och är uppbyggt enligt figur U, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram, och innehåller förutom TFI endast den kommandospecifika koden.
+
+%bild
+
+Svaret från skölden är uppbyggt enligt figur F, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram, och innehåller den kommandospecifika svarskoden, TFI, ett statusfält vilket indikerar om sändningen utfördes korrekt, vilket indikeras med 0x00, eller inte och slutligen finns också den data vilken önskade hämtas vilket kan vara upp till 262 bytes.
+
+%bild
 
 \section{Kravanalys och design}
+En kravspecifikation (Appendix X) utformades för hela produkten och för de ingående delarna. Kraven sammanställdes under en rigorös genomgång av vilka egenskaper och krav en användare kan ställa på en produkt av det slag som konstrueras. Förslag på egenskaper och krav på produkten gjordes av projektets medlemmar samt externa resurser såsom handledare.
+
+Ett kommunikationsprotokoll sammanställdes på sådant sätt att produktkraven uppfylldes. Detta protokoll  specificerar hur kommunikationen mellan enheterna är uppbyggd, hur kommunikationsförloppet, vilket sker mellan enheterna är designat, vilken information som utbyts och när detta sker samt hur säkerheten ska lösas.
 
 \subsection{Produktkrav}
+Produktens upplåsnings- samt låsningsförfarande, alltså den tid som användaren spenderar väntande vid låset efter att ha valt kommando i mobilapplikationen, ska ta maximalt fem sekunder men det bör ta endast en sekund. Vidare bör produkten kunna konfigureras med hjälp av mobilapplikationen för ett antal väl valda parametrar vilka antingen ger ökad säkerhet till systemet eller utökad funktionalitet.
+
+Låsenheten bör vara felsäker, till exempel ska låset förbli låst vid strömavbrott och den ska alltid vara tillgänglig för en användare. Vidare bör formfaktorn av låsenheten anpassas för det utrymme den avses installeras i, detta kan ske genom att avlägsna komponenter som ej används på de kretskort som låsenheten utgörs av. Senare bör en fungerande prototyp färdigställas där låsenheten fysiskt har installerats i något form av låshus, till exempel inuti en dörr eller i ett kassaskåp.
+
+Mobilapplikationen bör vara lättförståelig och mycket enkel att hantera då det är användandet av en vanlig metallnyckel som ska konkurreras med. Vidare bör inga kända buggar finnas samt att nycklar bör kunna delas med andra mobiltelefoner som har mobilapplikationen installerad. Mobilapplikatonen bör även tillhandhålla någon form av personverifiering, t.ex. PIN-kod.
 
 \subsection{Kommunikationen mellan enheterna}
+Kommunikation via NFC kan åstakommas på olika sätt men i detta arbete kommer metoden peer-to-peer användas. Den största anledningen till detta är att Android, genom Android Beam, endast kan använda den metoden för kommunikation mot en aktiv NFC-enhet, vilket är det som detta arbete riktar sig mot. För att mikrokontrollen ska kunna kommunicera mot Android via peer-to-peer måste mjukvaran för mikrokontrollern imitera Androids NFC-stack. Detta måste göras då Android endast har stöd för att använda Android Beam mot andra Androidenheter.
+
+Förutom att lösa kommunikationen via NFC måste ett kommunikationsprotokoll på applikationsnivå upprättas som tar särskild hänsyn till följande punkter.
+
+\begin{itemize}
+\item Låsenheten ska identifiera sig mot mobilapplikationen då en mobilapplikation kan inneha ett flertal nycklar och mobilapplikationen ska kunna avgöra vilken nyckel som ska användas.
+\item Om mobilapplikationen inte har tillgång till den nyckel som krävs ska det inte vara möjligt att få låsenheten att utföra kommandon skickade från mobilapplikationen.
+\item Det ska inte vara möjligt för en tredje part att få tillgång till någon nyckel.
+\item Det ska finnas en möjlighet att distribuera nycklar mellan olika användare.
+\end{itemize}
+
+Nedan beskrivs det utarbetade kommunikationsprotokollet.
 
 \subsubsection{Kommunikationsförlopp}
+För låssystemet har två kommunikationsförlopp utarbetats. Det första beskriver ett typiskt försök till upplåsing och det andra en lösning till distribution av nycklar.
+
+\subparagraph{Typisk upplåsning}
+
+%BILD!?!?!?!?!
+Mobilapplikationen startas upp. --> Låsenheten är passiv och väntar på ett detektera ett magnetfält. 
+Personverifiering genomförs genom att användaren anger den förvalda PIN-koden i mobilapplikationen. --> Låsenheten är passiv och väntar på ett detektera ett magnetfält. 
+Då mobilens knapplås är av, förs mobiltelefonen i närheten av låsenheten. --> Låsenheten detekterar mobiltelefonens magnetfält och vaknar upp.
+ --> Låsenheten skickar ett meddelande av typ 1 bland annat innehållande en publik krypteringsnyckel samt låsenhetens ID.
+Mobiltelefonen tar emot meddelandet och söker med hjälp av låsenhetens ID i mobilens lokala databas efter det spcifika upplåsnings-ID som finns för det särskilda låset.
+Finns inte upplåsnings-ID kan förloppet inte förskrida men finns detta fortsätter förloppet.
+Telefonen krypterar upplåsnings-ID med hjälp av den publika krypteringsnyckeln och skickar detta i form av ett meddelande av typ 2.
+ --> Låsenheten dekrypterar med sin privata krypteringsnyckel och jämför resultatet med sitt aktuella upplåsnings-ID.
+ --> Om upplåsnings-ID är lika med det dekrypterade upplåsnings-ID skickar låsenheten en signal för upplåsning till en elektrisk låskolv.
+Alternativa steg:
+Om ett svar innhållande information om låsenheten beviljande upplåsningen önskas hålls mobiltelefonen kvar mot låsenheten.
+ --> Låsenheten skickar ett svar av typ 3 där den anger resultatet samt eventuell felkod.
+Mobiltelefonen tar emot meddelandet och visar informationen för användaren.
+
+\subparagraph{Kommunikationsförlopp vid distribuering av nycklar
+}
+Eftersom projektets mål är att utveckla en prototyp mot privatpersoner och för att prototypen inte ska bli för komplex har valet att dela nycklar mellan två olika telefoner gjorts. Den mest användarvänliga lösningen vore att ha en central enhet som är ansvarig för distribution av nycklar. Dock skulle en sådan lösning medföra oproportioneliga svårigheter under utvecklingen av prototypen. En lösning att dela nycklar direkt mellan olika mobiltelefoner skulle medföra mindre svårigheter under utvecklingen. Användarvänligheten borde inte minska avsevärt utav denna lösning då det vanligen endast är ett fåtal användare i ett hushåll och ett större system för distribution är under dessa förhållanden onödigt.
+
+Den ena mobiltelefonen har den aktuella nyckeln och skickar den via NFC till den andra mobiltelefonen vilken lägger in den i sin databas.  Nedan beskrivs hur delningen går till. Mobiltelefon A avser den mobiltelefon som har för avsikt att dela sin nyckel med mobiltelefon B. Proceduren har konstruerats för att vara så användarvänlig som möjligt.
+
+\begin{enumerate}
+\item Användaren på mobiltelefon A väljer ut en nyckel för delning.
+\item Mobiltelefonerna förs mot varandra och användaren på av mobiltelefon A trycker på skärmen för att dela.
+\item Ett meddelande av typ 4 skickas.
+\item Mobiltelefon B tar emot nyckeln och användaren konfirmerar att nyckeln skall läggas till i databasen.
+\end{enumerate}
 
 \subsubsection{Meddelandetyper}
+För att göra tolkandet av meddelandena så smidiga som möjligt har ett antal olika meddelandetyper utformats med så lika utformning som möjligt. De huvudsakliga typerna kallar vi 1,2,3 och 4. Meddelandena representeras på mobilapplikationssidan av en klass kallad NFCPMessage och på mikrokontrollerna samt vid sändandet av ASCII-strängar. 
+
+Gemsamt för de olika typerna är betydelsen av de första tecknen. De fyra första tecknen skapar tillsammans en identifiering av det aktuella låset. Fyra tecken ger $2^{32} $ olika alternativ vilket möjliggör lite över 4 miljarder olika lås vilket bör vara tillräckligt. Vidare anger nästkommande tre tecken statusen, typen och eventuell felkod för systemet. Efter det följer ett fält som skall representera upplåsnings-ID. Är typen 1 eller 2 består detta av 4 blanksteg vilket innebär att fältet inte används men är det av typ 3 eller 4 används det till ett variabalt långt fält antingen bestående av ett krypterat upplåsnings-ID eller av ett okrypterat sådant när det handlar om typ 4 okrypterat.Om meddelandet återigen är av typ är av typ 1 följs blankstegen av en publik krypteringsnyckel. I övriga fall är detta fält tomt.
 
 \subsubsection{Säker kommunikation}
+De tre säkerhetshålen beskrivna i teoriavsnittet, tjuvlyssning, datamodifiering och man in the middle attack  kommer täppas till med hjälp av kryptering av den information som är känslig, det vill säga upplåsningskommandot. Tjuvlyssning kan inte undvikas, men avlyssnarens förmåga att förstå och använda skadlig information försvåras markant med kryptering. Genom att upprätta en säker krypterad kanal kan säkerheten garanteras så länge inte en angriparen får tillgång till den privata nyckeln. 
+
+Datamodifiering kommer relativt lätt att kunna undvikas om meddelanden som inte är utformade efter kommunikationsprotokollet ignoreras. Man in the middle attacker är också lätta att undvika eftersom endast två NFC enheter kan kommunicera med varandra. Om en tredje part skulle försöka ställa sig i mitten av ett kommunikationsförlopp så bryts den skapade anslutningen mellan våra enheter och detta upptäcks snabbt. 
+
+Ett annat potentiellt hot att motverka var så kallade Replay attacker (eng. Replay attacks). Det betyder att vi har krypterad kommunikation men om en elak avlyssnare kopierar det krypterade upplåsningskommandot och sedan skickar till låsenheten, så kommer detta att dekrypteras och verka korrekt. För att motverka Replay attacker genererar låsenheten ett slumptal som skickas ut tillsammans med den publika nyckeln i varje kommunikationsförlopp. Detta tal krypteras av mobilapplikationen tillsammans med upplåsningskommandot för att skapa unika meddelanden varje förlopp och på så vis motverka Replay attacker. Det sista steget i förloppet är för låsenheten att dekryptera meddelandet och se till att slumptal plus upplåsningskommando stämmer med vad som förväntas.
 
 \section{Material och verktyg}
+Nedan listas de material och verktyg som användes vid framställandet av prototypen. Med material menas de fysiska delarna vilket lösningen består av och med verktyg menas de ofysiska delarna såsom källkodsbibliotek, utvecklingsmiljöer eller specifikationer.
 
 \subsection{Mikrokontroller}
+Valet av hårdvara till låsenheten föll på Arduinoplattformen då Arduino liksom Android är open source och har en mycket stor användarbas[6] samt att färdigutvecklade bibliotek för diverse användningsområden, däribland NFC, finns att tillgå. Arduino erbjuder också en relativt kostnadseffektiv men framförallt tidseffektiv lösning då ett NFC-påstickskort finns tillhanda vilket lätt kan anslutas till en Arduino.
+
+En Arduino av typen Arduino Mega R3 valdes vilken i dagsläget är den nyaste revideringen av deras Mega-kretskort och till detta valdes NFC-skölden PN532 NFC/RFID Shield från tillverkaren Adafruit.
 
 \subsubsection{Utvecklingsmiljö och programspråk}
+Den utvecklingsmiljö som till största del använts är Arduinos utvecklingsmiljö version 1.0.4 där programspråket som använts är C/C++. mer?
 
 \subsubsection{Implementerade och intressant protokoll samt specifikationer}
+De protokoll och källkodsbibliotek vilka blivit implementerade eller relativt starkt modifierade är följande.
+\begin{itemize}
+\item SNEP (Simple NDEF Exchange Protocol) (källa)
+\item LLCP (Logic Link Control Protocol) (källa)
+\item Källkodsbiblioteket Embedded PN532 (källa)
+\item Källkodsbiblioteket PolarSSL (källa)
+\end{itemize}
+De protokoll, specifikationer, manualer och källkodsbibliotek vilka har bidragit till ökad förstålse inom arbetet är följande:
+\begin{itemize}
+\item NDEF (NFC Data Exchange Format) (källa)
+\item NPP (NDEF Push Protocol) (källa)
+\item Användarmanual till PN532 (källa)
+\item Applikationsguide till PN532 (källa)
+\item Källkodsbiblioteket av Java-man (källa)
+\item ISO/IEC 18092 - NFCIP(Near Field communication, Interface and Protocol), del 1. (källa)
+\item Källkodsbiblioteket OpenSSL (källa)
+\item Källkodsbiblioteket Crypto++ (källa)
+\end{itemize}
 
 \subsubsection{Val av källkodsbibliotek för implementation av NFC-stacken}
+Vid genomgång av källkodbiblioteket som följde med PN532[källa] visade det sig att kodbiblioteket ej gav all den funktionallitet som krävdes. Kodbiblioteket gav endast möjlighet att kommunicera mot passiva NFC-enheter och inte aktiva vilket var det som behövdes. 
+
+Kodbiblioteket Embedded-PN532[källa] funnet på Github är ett bibliotek under open source för att kommunicera mellan en arduino med skölden PN532 NFC/RFID Shield och en androidbaserad mobiltelefon, det vill säga att kommunikation mot aktiva NFC-enheter är möjlig. Det kodbibliotek som följde med PN532 NFC/RFID Shield ligger som grund för Embedded-PN532 och ett antal lager ovanpå detta har skrivits vilka gör kommunikation mot android möjligt. Upphovsmannen garanterar att kommunikationen fungerar då androidversionen 2.3.3 används, observera att detta är en lägre version än den versionen det här projektet arbetar mot. 
+
+Dokumentationen för Embedded-PN532 är mycket bristfällig och i stort sett obefintlig vilket gör det svårt att tolka och sätta sig in i vad koden beskriver. Vidare är endast delar eller bråkdelar ur de behövda protokollen implementerade och det inses snabbt att detta kodbibliotek är ett hemmabygge av en privatperson. 
+
+Kodbiblioteket Open NFC är en utmanare till Embedded-PN532 och Open NFC är det kodbiblioteket Android använder för att kommunicera över NFC[16]. Det kan tyckas att detta biblioteket bör användas istället för Embedded-PN532 men efter överläggande väljs att inte göra detta. De främsta orsakerna till att Open NFC inte användes är att det hittades en tid in i projektet och då hade en ökad förståelse för Embedded-PN532 kommit på plats samt att ett underliggande operativsystem krävs för att biblioteket ska fungera, något som varken finns eller har tänkt ges plats på mikrokontrollern. Vidare behövdes en NFC HAL(Hardware abstraction layer) module skrivas vilken länkar samman Open NFC med det aktuella NFC-chippet, vilket verkar vara ett omfattande arbete. Dessa anledningar gjorde att Embedded-PN532 valdes trots dess brister och låsenheten kommer alltså att använda Embedded-PN532 för att möjliggöra kommunikation via NFC.
+
+De protokoll Embedded-PN532 har implementerade är LLCP, NPP och NDEF. Viktigt att notera är att endast delar eller bråkdelar ur dessa protokoll är implementerade och det är troligtvis svårt att använda det här biblioteket till applikationer som behöver skicka mycket data då den data som kan skickas åt gången är begränsad då till exempel inga chaining-procedurer i LLCP finns och inte heller är chunk-mekanismen i NDEF implementerad. Dock kommer inte den applikation som kommer tas fram i det här projektet behöva skicka stora datapaket eller mycket information vilket gör att användandet av Embedded-PN532 bör fungera bra.
 
 \subsubsection{ Val av källkodbibliotek för implementation av kommunikationssäkerhet}
+Det finns flera kända och välimplementerade färdiga bibliotek för att implementera kryptering i C++,  det mest kända bibloteket är OpenSSL, och det undersöktes till en början. Det visade sig att OpenSSL var tungt och inte optimerat för ett litet inbyggt system som Arduino mikrokontrollern är. Till en början försöktes det på att banta ner OpenSSL och bara använda relevanta delar men de visade sig inte fungera, jakten på mindre bibliotek började. 
+
+Nästa krypteringsbibliotek som undersöktes var Crypto++, detta API var betydligt mindre än OpenSSL men det visade sig ändå vara alldeles för resurskrävande och och svårt att få fungerande utan många beroenden. Det som behövdes var ett litet krypteringsbibliotek gjort speciellt för inbyggda system med begränsad prestanda, krypteringsbiblioteket PolarSSL visade sig vara precis detta. PolarSSL passar bra för inbyggda system eftersom det bygger på lös bindning (loose coupling). Det betyder att klasser har få beroenden av övriga klasser, perfekt för Arduinon där endast ett fåtal funktioner behövdes och på så sätt sparades massvis med resurser. Med biblioteket var det enkelt att plocka ut de delar som behövdes, vilket i stort sett bara var dekryptering av krypterade meddelanden.
 
 \subsection{Mobilapplikation}
+Androidplattformen har valts för utvecklandet av mobilapplikationen då Android är ett väletablerat mobilt operativsystem med en stor användarbas[4]. Androidgemenskapen är också öppnare än t ex Apples, då den bygger på open source. Vidare var Android och tillverkare av androidbaserade telefoner tidiga med att adoptera NFC-tekniken[5] och har på så vis ett bra stöd för tekniken. För att få det bästa stödet möjliga stödet för NFC väljs en av de nyare Android-versionerna, Android 4.0 då det från och med denna funktion finns de senaste finesserna.
+
+En mobiltelefon av märket LG med modelnamn L9 fanns tillhanda för projektets räkning och mobiltelefonen innehar alla funktioner som söktes; stöd för NFC och Android version 4.0. För övrigt har även telefoner av typerna Samsung Galaxy S3 och HTC One X funnits tillgängliga. Dessa telefoner är något modernare och därmed snabbare än föregående telefon. De har även en senare version av Android i form av 4.1.2.
 
 \subsubsection{Utvecklingsmiljö och programspråk}
+För utveckling av Android-applikationer behövs förutom Java SDK och en dator Android specifika program som laddas hem i form av Android SDK. Paketet innehåller bland annat Eclipse och diverse plugins som möjliggör utveckling och testning av Android-applikationer. Eftersom det var detta som föreslogs på developer.android.com och eftersom vi har erfarenhet av Eclipse valdes detta trots att det finns andra alternativ.
 
 \subsubsection{Använda API:er}
+Java har ett API med väldigt många och användbara klasser och metoder. Förutom detta finns det ett särskilt API för Android som bygger på Javas men med ytterligare funktionalitet som är specifik för en mobil enhet. Detta API innehåller många funktioner som är till hjälp för Android-utveckling och har därför använts. Ett specifikt paket (package) som var användbart var android.nfc som innehåller det som en Android-utvecklare behöver får att kunna kommunicera via NFC med implementerad applikation.
+
+För kryptering var det två API:er som var särskilt användbara, java.security och javax.crypto. Java.security utnyttjades för att skapa RSA nyckelobjekt från mottagna nyckelspecifikationer från mikrokontrollern och javax.crypto användes för att kryptera meddelanden med den skapade nyckeln.  Ett utomstående API var även nödvändigt att använda för att få fungerande kryptering på Android-plattformen, Bouncy Castle Crypto API. Detta var på grund av det ej gick att göra en av metoderna serialiserbar i de ovannämnda krypteringsbiblioteken.
 
 \section{Genomförande}
+Utvecklingen av låsenheten och mobilapplikationen har skett parallelt tills de kunde slås samman till en produkt.
 
 \subsection{Utveckling av låsenheten}
+Utvecklingen av låsenheten beskrivs lager för lager, nerifrån och upp genom hela den implementerade NFC-stacken. NFC-stacken följer OSI-modellen, dock följs inte OSI-modellen rakt av då NFC-stacken har distruberat ut funktionalliteten olika mellan lagren och vissa av dem har slagits samman. 
+
+%bild
+
+De översta fyra lagren implementeras i mjukvara vilka körs på mikrokontrollern då NFC-skölden endast har RF-protokollen implementerade. Då en mikrokontroller önskar nyttja RF(Radio Frequency)-protokollen behöver kommunikation ske mot NFC-skölden, denna funktionallitet åskådligörs via ett lager mellan LLCP och RF-protokoll och beskrivs också mellan dessa avsnitt.
 
 \subsubsection{RF-protokoll-lagret}
+De protokoll som specifierar den fysiska överföringen av NFC-meddelanden är implementerade i PN532 NFC/RFID Shield och behöver således inte utvecklas. Dock krävs styrning av de funktioner vilka RF-protokollen erbjuder, såsom att skicka eller att ta emot meddelanden. Detta sker genom kommunikation från mikrokontrollern till skölden och vilka kommandon som skickas beskrivs nedan.
 
 \paragraph{Kontroll av RF-protokollens funktioner}
+Skölden har en stor mängd kommandon som kan nyttjas och de som används av projektet beskrivs i avsnitt 3.3.2 (NFC för Arduino mha PN532 NFC/RFID Shield). Källkodsbiblioteket Embedded-PN532 implementerar de kommandon vilka ger den kontroll av skölden detta arbete söker, men de parametrarna vilka skickas med ett kommando har i viss grad modifierats. Detta gjordes i samband med att sessionslagret NPP byttes ut till förmån mot SNEP(se avsnitt 6.1.4).
+
+De kommandon vilka anropas från att skölden startas upp till dess att data utbytes mot en aktiv NFC-enhet, beskrivs i tabell XIV. Observera att kommandot SAMConfigure endast anropas vid uppstart av skölden och anropas inte igen såvida inte skölden startas om. Observera också att Kommando och Respons visas i hexadecimal teckenkodning.
+
+%bild
+%bildtext: Tabell XIV, omarbetat från applikation guide
+
+För att en ny uppkoppling ska ske mot en enhet måste kommandot TgInitAsTarget anropas och efter anropet väntar skölden på ett meddelande av typen ATR\_REQ från initiatorn. När ATR\_REQ inkommit returneras detta i svaret på TgInitAsTarget-kommandot, som det initiala meddelandet, och kan utläsas i tabell XIV efter de inledande bytsen 8D och 25.
 
 \subsubsection{Kommunikation mellan Arduino och NFC-sköld}
+Källkodsbilioteket Embedded-PN532 implementerar kommunikation mot skölden via SPI[källa], men valet att istället använda kommunikationstekniken I2C[källa] gjordes. Detts besut togs för att skölden i grundutförande använder I2C och för att I2C är enklare att förstå då den har en högre abstraktionsnivå än SPI. I2C använder buffrar till ut- och ingående meddelanden vilka manipuleras med hjälp av olika funktioner (metoder) och får på så sätt en högre abstraktionsnivå än SPI, som skickar och tar emot meddelanden direkt på kabeln en byte i taget. Nackdelen med att använda I2C är att buffrarna, vilka är fem till antalet, kan ta relativt stor del av det begränsade SDRAM- minnesutrymmet. För att kunna utbyta applikationsdata uppåt 200 bytes valdes en bufferstorlek på 256 bytes, vilket resulterar i en total SDRAM användning på 1280 bytes.
+
+Följande stycke ska nog ligga i diskussion.
+Att byta ut SPI mot I2C var relativt enkelt då det källkodsbibliotek som följde med PN532 NFC/RFID Shield fanns i två versioner, där den ena bygger på SPI och den andra bygger på I2C för kommunikation mot en Arduino. Dessvärre behövde I2Cs buffrar vara relativt stora, omkring 180 bytes styck, då skölden inte klarar att ta emot segmenterade meddelanden, men då Arduino Mega 2560 R3 har 8KB RAM-minne varvar 0.5KB består av mikrokontrollerns minneshanterare finns utrymme för att använda I2C.  
 
 \subsubsection{LLCP-lagret}
+Vid implementationen av LLCP-lagret används den officiella definitionen av protokollet som är utgivet av NFC-forum (källa). Android version 4.0 implementerar LLCP något annorlunda än Android version 2.3 vilket Embedded-PN532 är skrivet efter. Detta gjorde att befintlig kod för detta lagret behövde modifieras. Information direkt från Google kring hur protokollet är tolkat gick tyvärr inte att finna, men ett projekt hittades för kommunikation mot Android 4.0 genom att nyttja ett NFC-chip likt det som används i detta arbete(källa).  Det funna projektet var skrivet i programspråket Java och visar klart och tydligt hur LLCP ska användas för att skapa en länk mot en mobiltelefon med Android. Detta projekt används därför som en mall vid modifiering av LLCP-lagret i källkodsbibioteket Embedded-PN532. Bilden nedan visar hur server respektive klient nyttjar LLCP i (källa) projektet för att skapa samt stänga ned en länk då Android 4.0 används, och detta är också det förfarandet som Embedded-PN532 skrivs om till att utföra.
+
+%bild: som visar hur server respektive klient nyttjar LLCP enligt java-man för att skapa samt stänga ned en länk.
 
 \subsubsection{NPP- eller SNEP-lagret}
+NPP är det protokollet som Embedded-PN532 implementerar. Då NPP är ett protokoll som nu har blivit utbytt samt att det är relativt komplext och svårt att till fullo greppa gjordes valet att byta ut detta till förmån för SNEP. SNEP är det nya protokollet som i förhållande till NPP är väldigt rättfram och enkelt att förstå. Detta val gjordes även då det i kommunikation mot Android fortfarande går det att använda NPP då mobiltelefonen faller tillbaka på det gamla protokollet om mobiltelefonen känner av att det nya protokollet SNEP inte används. Han som gjort java projektet(Namn) visar även klart och tydligt hur protokollet SNEP ska användas för att skicka och ta emot data mellan Arduino och mobiltelefonen och används. Eftersom kommunikation med utbyte av data önskas har låskonrtollern fått funktionalitet att både agera som klient och server. Då låskontrollern agerar som klient skickas en Put-förfrågan som beskrivs i teoriavsnittet SNEP(nummer?) där de olika fälten Version, Request, Length, och Information initieras till värderna 10, 02, hur många bytes som utgör informationsfältet, respektive NDEF meddelandet där varje octet i Put-förfrågan är utformad med talbas 16. Efter att förfrågan har skickats så kommer klienten att vänta på ett svar från serven. Om överföinger gick bra så kommer klienten att ta emot svarsmeddelandet Success(se avsnitt nummer?) som indikerar att servern klarat av att genomföra Put förfrågan. Då låskontrollen agerar som server så väntar enheten på en Put-förfrågan som skickas från en klient. Uppbygnaden av en Put-förfrågan beskriv detaljerat i teoriavsnittet(nummer) 
+
+peer-to-peer önskas använder bra PUT
+response 
+felkoll
+
+Skriv om hur vi använder SNEP. Visa också med BILD
 
 \subsubsection{NDEF-lagret}
+NDEF(NFC Data Exchange Format) är implementerat i Embedded-PN532 och biblioteket innehåller de funktioner som arbetet eftersöker, detta medför att NDEF-lagret inte har utvecklats vidare. 
 
-\subsubsection{Applikationen, den som snurrar i loop()}
+Skriv om hur vi använder NDEF. Visa också med BILD
+
+\subsubsection{Applikationen, den som snurrar i \texttt{loop()}}
+Applikationen är utformad på sådant sätt att mikrokontrollern till en början 
+
+skriv steg för steg vad som händer
+
+\subsubsection{Fysisk implementering - är den aktuell?}
+En prototyp där låsenheten fysiskt har implementeras i något form av lås bör färdigställas. Flertalet potentiella implementeringsmöjligheter finns bland annat genom att byta ut hela låshuset i en vanlig ytter- eller innerdörr,  använda en dörr med ett elektriskt lås och koppla in låsenheten mot denna eller att installera låsenheten i ett kassaskåp som har ett elektriskt lås. Om tid finnes för fysisk implementering ska den mest passande lösningen utredas. Om så behövs kommer låsenhetens formfaktor minskas för att möjliggöra lättare installation.
 
 \subsection{Utveckling av mobilapplikationen}
+Utvecklingen av applikationen för Android med stöd för NFC har bedrivits i iterativ form. En funktion har lagts till i taget för att sedan testas.
+\begin{enumerate}
+\item NFC-funktionaliteten. Som första steg utvecklades en applikation vars enda funktion var att skicka och ta emot information över NFC. Denna applikation utvecklades för att kommunisera med en annan app då mikrokontrollern i detta skede inte var redo för att kommunicera med en Android-telefon. För att implementera denna funktion använde vi Android Beam då det är den enda funktion moderna Android telefoner kan använda för att skicka och ta emot NFC-meddelanden.
+\item NFC-funktionaliten utarbetades för att följa ovanstående kommunikationsprotokoll. Detta för att den skulle bli redo för mikrokontrollern när den var redo.
+\item När kommunikationen var redo var mikrokontrollern långt ifrån klar att ta emot eller skicka meddelande. Därför gick utvecklingen vidare för att lägga till fler funktioner. Något sätt att kunna verifiera att rätt person hade tillgång till telefonen och därigenom dess nycklar behövde läggas till. Med anledning av detta implementereades PIN-kod med en bakomliggande timer för att få tillgång till applikationens alla funktioner.
+\item När PIN-koden var på plats var applikationen redo för att okrypterat kunna låsa upp ett lås vars identifikationsnummer och upplåsningskommando behövde hårdkodas in i applikationen. Då detta är uppenbart är en lösning som inte går att skala upp utvecklades en bakomliggande databas med ansvar för att hålla reda nycklar och till vilket lås de hör till. Även om en lokal relationsdatabas användes då detta redan finns inbyggt stöd för i Android kan implementationen med stor sannolikhet göras effektivare med en så kallad Key-value-store. Databasen består av en tabell med låsets id som primär nyckel och upplåsningskommandot/nyckeln som andra kollumn.
+\item Databasens funktioner integrerades i kommunikationsförloppet och en aktivitet med särskilt ansvar för att administrera databasen utvecklades. Aktiviteten kan lista paren, lägga till nya par och redigera gamla par.
+\item När ovanstående steg var klart kunde man dela nycklar på ett begripligt sätt dock fanns ett behov av en automatisk funktion för delningen. Därför utvecklades en sådann automatisk funktion för delning mellan två mobilapplikationer. Delningen skedde genom att ett val av nyckel genomfördes för att sedan trycka på delning och hålla två telefoner mot varandra. NFC användes och en bekräftelse behövs för att den mottagande telefonen skall lägga till paret i dess databas.
+\item Nästa steg var att få till en krypterad länk. Först implementerades kryptering i förloppet mellan två telefoner. Detta eftersom det är mycket lättare att använda de Java API som finns för kryptering än de som finns tillgängliga för en mikrokontroller som är skrivna i C.
+\end{enumerate}
 
 \subsection{Utveckling av en prototyp bestående av båda enhterna}
+Skriv om hur vi fick ihop de båda till en produkt. Här är ju exempelvis kryptering väldigt relevant.
 
 \section{Resultat}
+Här bör vi beskriva resultaten och relatera dessa till kravspecifikationen
+Detta kapitel ämnar beskriva resultaten av kandidatarbetet samt relatera dessa till den från början uppsatta kravspecifikationen. Såväl skallkrav som börkrav från kravspecifikationen behandlas.
 
 \subsection{Produkten som helhet}
+Projektet har resulterat i ett låssystem bestående av en mikrokontroller med NFC-kommunikation som exekverar mjukvara skriven i C++ och en Android-applikation skriven i Java. Enheterna kommunicerar via NFC. Android-applikationen kommunicerar genom Androids egna API för NFC-kommunikation, kallat Android Beam, och mikrokontrollern imiterar en Android-enhet med hjälp av en delvis egenutvecklad programvara. Kommunikationen sker i enligt det uppsatta kommunikationsprotkollet och kommunikationen är krypterad med RSA. Kommuniationsförloppet fungerar men är långsammare än det uppsatta kravet. Cirka 15 sekunder tar en lyckad upplåsning. 
 
 \subsection{Mobilapplikationen}
+Arbetet med Android-applikationen har resultaterat i en användbar men funktionsrik applikation. Applikationen uppfyller alla de skallkrav samt majoriteten av de börkrav som togs fram innan utvecklandet utav applikationen. De börkrav som inte uppfylls är att alla versioner av Android inte stödjs samt att applikationen inte har någon möjlighet att konfigurera låsmodulen. Sammanfattningsvis följer en lista av de krav applikationen klarar och inte klarar. Listan följs av en mer ingående beskrivning av applikationen.
+\begin{itemize}
+\item Applikationen följer Jacob Nielsen’s heuristik
+\item Applikationen är noga testad och har inga kända buggar.
+\item Applikationen fungerar inte på alla NFC-telefoner. Detta eftersom från och med Android 4.0 ändrades kommunikationen radikalt. Därför stödjs bara 4.0 eller senare.
+\item Nycklar kan delas med andra applikationer över NFC.
+\item Applikationen kräver personverifiering med hjälp av PIN-kod.
+\item Applikationen har ingen möjlighet att konfigurera om låsenheten.
+\end{itemize}
+
+Mobilapplikationen bör vara lättförståelig och mycket enkel att hantera då det är användandet av en vanlig metallnyckel som ska konkurreras med. Vidare bör inga kända buggar finnas samt att nycklar bör kunna delas med andra mobiltelefoner som har mobilapplikationen installerad. Mobilapplikatonen bör även tillhandhålla någon form av personverifiering, t.ex. PIN-kod.
+
+Applikationen består av ca 2000 rader Java-kod och till det ca 500 rader xml-definerade gränssnitt. 
+kort överblick, består av 2000 rader Java-kod.
 
 \subparagraph{Övergripande design}
+Applikationen är skapad för att så enkelt som möjligt tillhandahålla de funktioner användaren behöver. Med en enkel design uppstår inga onödiga svårigheter och med återkommande typsnitt, färger och platformskonventioner uppstår en trygghet i designen. De aktiviteter som har menyer visas som actionbars för att öka synligheten, annars visas de endast då menyknappen trycks ner.
+
+%bilder
+%bildtext: Figur 1 till 6.
+
+Figurerarna 1 till 6 ovan visar i tur och ordning aktiviterna Login, Main, Success, Settings, Password och Keys.
+Följande stycken ämnar beskriva dem och dess funktion.
 
 \subparagraph{Login}
+Login är den första aktiviteten som en användare av Android-applikationen möts av. Den huvudsakliga funktionen av denna aktivitet är att förhindra att applikationen kan användas av oönskade användare. Den fungerar som en port till övriga applikationen genom att implementera ett system för personverifiering med hjälp av PIN-kod. Ges inte rätt PIN-kod går inte övriga delar av applikationen att nå. När korrekt PIN-kod har angivits startas en timer. Timern loggar ut användaren igen efter en bestämd tid. 
 
 \subparagraph{Main}
+När användaren angett PIN-kod möts han av nästa aktivitet, Main. Main är aktiviten hela applikationen bygger runt. Den är ansvarig för kommunikationen och att automatiskt skicka rätt NDEF-meddelande utgående från det senaste mottagna meddelandet. Detta sker helt enligt ovanstående kommunikationsprotokoll. Användaren informeras om förloppet med hjälp av en textvy, lokaliserad nedtill. När kommunikationen har nått sitt mål, en upplåst dörr, eller om detta inte skulle ske skickas användaren vidare till Success-aktiviten alternativt Denied-aktiviteten. Är det inkommande meddelandet däremot delning av en nyckel kommer det upp en bekräftelseruta där en bekräftelse från användaren krävs innan nyckeln läggs till i databasen.
+
+Om användaren har behov av av att ändra inställningar för applikationen trycker denne på Settings-knappen lokaliserad längst ned på skärmen för att komma till Settings-aktiviteten.
 
 \subparagraph{Success och Denied}
+Success-aktiviteten har till uppgift att visa för användaren att upplåsningen lyckades. Vid ett anrop visas aktiviteten bara en kortare stund för att sedan avslutas och applikationen går tillbaka till Main-aktiviten. Förutom Success finns det även en liknande aktivitet kallad Denied. Den har till uppgift att visa vad som gick snett om något går snett vid låsförfarandet. För övrigt fungerar den på samma sätt som Success.
 
 \subparagraph{Settings}
+Settings-aktivteten nås via knappen längst ner i Main. Aktiviten har till uppgift att rada de inställningar som finns att göra. Prototypen innehåller endast två sådanna men aktivten är förberedd för fler. Trycker användaren på knapparna kommer denne vidare till aktiviterna Password respektive Keys.
 
 \subparagraph{Password}
+Denna aktivitet har den enkla uppgiften att ändra PIN-kod. För att kunna ändra PIN-kod krävs att den gamla anges korrekt.
 
 \subparagraph{Keys}
+Sist men inte minst finns aktiviten Keys. Huvuduppgiften för denna aktivitet, som är applikationens nästa största, är att ansvara för hanteringen av nyckelpar. Bakom aktiviten ligger en lokal relationsdatabas av SQLite-typ som är ansvarig för att lagra nyckelparen. De databasfunktioner aktiviten ger ett ovanliggande skal till är att lista alla par, redigera ett par, ta bort ett, lägga till nya, söka och att dela med andra smarta telefoner med applikationen installerad.
+
+Längst upp på skärmen återrfinns en bläddringsbar vy med alternativknappar. Vyn listar de nyckelpar som finns i databasen och det går att välja en i taget. När en knapp är vald går det att använda knapparna för att ta bort nyckelparet från databasen eller för att dela den genom knappen nedtill. Delningsfunktionen skickar användaren vidare till en annan skärm. Förs telefonen då mot en annan smarttelefon är det möjligt att dela paret genom att röra skärmen. Nedtill finns också knappar för att skapa nya nyckelpar och för att söka bland befintliga. Popup-fönster dyker upp för dessa uppgifter.
 
 \subsection{Låsenheten}
+Den slutliga låsenheten kan kommunicera mot mobiltelefoner med Android 4.0 eller senare. De mobiltelefoner vilka låsenheten har kommunicerat mot är HTC One X, Samsung galaxy S3 och LG optimus L5. Vidare stödjer låsenheten säker kommunikation via krykrypteringsalgoritmen RSA med 512-bitar stora nycklar. Skölden, PN532 NFC/RFID Shield, har kompletterats med en mindre diod-krets vilken indikerar om låset låstes upp eller ej.
+
+Mikrokontrollern stödjer den funktionallitet vilken krävs för att hantera kommunikation med skölden. En minimalistisk implementaion, dvs de kommandon som utgör kärnan vid aktiv kommunikation, används. Kommunikation mellan mikrokontroller och sköld utförs med I2C som kommunikationsprotokoll.
+
+Låsenheten  erbjuder ett adekvat stöd för aktiv NFC-kommunikation. Den tillhandahållna NFC-stacken består av 
+minimalistiska implementationer av NDEF, SNEP och LLCP. De avkall vilka har gjorts har resulterat i begränsningar på mängden data vilket kan skickas mellan NFC-enheterna. Gränsen på data från applikations-lager ligger på 250-bytes per sändning. När diverse headers plockas bort resulterar detta i en datamängd på ….. för ren applikationsdata. Vid sändning kan en datamängd på 163 bytes skickas vilket ger 139 bytes för ren appliationsdata.  LTO har satts till 800ms vilket är tillräckligt även för de långsammare Android telefonerna.
+
+Låsenheten stödjer dekryptering av 512-bitars RSA. Detta är det delmoment i mikrokontrollerns arbetsbörda som tar absolut längst tid. Dekrypteringen tar 3.2 sekunder av den totala körningstiden som beräknats till ca 15 sekunder på Arduino Mega 2560. 
+
+I befintlig implementation är upplåsningsnyckel hårdkodad och inte konfigurearbar. För att konfigurera krävs att drivrutiner modifieras, kompileras och laddas upp på mikrokontrollern. 
+
+För att sänka energiförbrukningen försätts låsenheten i ett strömsparläge då dess tjänster inte behövs. Mikrokontrollern väcks av en signal som skölden skickar när den detekterar ett NFC fält. Om även mikrokontrollern tillåts vara aktiv hela tiden fås en nominell strömförbrukning på ….. . Med strömsparfunktioner landar den på …...
+
+Mikrokontrollerns drivrutiner omfattas av 2500 rader C++ kod. Kompilerat och uppladdat på Arduinon tar detta 28880 bytes av de totalt 256kbytes som finns tillgängliga. Runtime kontroller av användandet av SDRAM har uppgått till maximalt 4209 bytes av 8kbytes.  
 
 \section{Diskussion}
 
