@@ -2,6 +2,10 @@
 \usepackage[utf8]{inputenc} %UTF8 stöd så att jag kan skriva åäö
 \usepackage[swedish]{babel}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{fixltx2e}
+\usepackage{float}
+
 
 \begin{document}
 
@@ -178,21 +182,50 @@ NFC-stacken är uppbyggd av ett antal protokoll som sträcker sig i stort sett �
 
 \end{itemize}
 
+%\includegraphics[scale=0.7]{NFC_stack}
 % bild in här
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{NFC_stack.jpg}
+\caption{Här visas NFC-stackens protokoll i förhållande till vilken del i OSI-modellen de utgör.}
+\label{fig:NFC Stack}
+\end{figure}
 
 \paragraph{NDEF}
 
 \textit{(NFC Data Exchange Format)}[källa] är särskilt utformat för att kunna kapsla in applikationsdata på ett effektivt sätt med minimal overhead. NDEF meddelanden byggs upp av \texttt{records}, vilket kan liknas vid sidor i en bok, där boken utgör NDEF meddelandet. Meddelandet kan bestå av ett obegränsat antal records som alla kan bära på olika sorters data.  
 
-När en applikation önskar sända data över en NFC-länk, kapslas datan in i ett NDEF meddelande. Beroende på datans storlek och struktur skapas varierande mängd records som tillsammans bildar ett NDEF meddelande. Meddelandet överförs sedan till målenheten som tar emot och behandlar det. NDEF garanterar inte att leverans av data är tillförlitlig och specificerar således inte vad målenheten skall göra vid mottagandet av ett felaktigt utformat NDEF meddelande. Detta lämnas till brukande applikationer att komplettera med datagarantier och felhantering som gemensamt brukar kallas QOS (Quality Of Service).
+När en applikation önskar sända data över en NFC-länk, kapslas datan in i ett NDEF meddelande, som visas i tabell \ref{tab:NDEF Message}. Beroende på datans storlek och struktur skapas varierande mängd records som tillsammans bildar ett NDEF meddelande. Meddelandet överförs sedan till målenheten som tar emot och behandlar det. NDEF garanterar inte att leverans av data är tillförlitlig och specificerar således inte vad målenheten skall göra vid mottagandet av ett felaktigt utformat NDEF meddelande. Detta lämnas till brukande applikationer att komplettera med datagarantier och felhantering som gemensamt brukar kallas QOS (Quality Of Service).
 
 %Bild
 %Bildtext: Ett NDEF meddelande består av en eller flera  records.
 
-Varje record utformas efter en fördefinerad struktur och består av ett antal fält. Det första fältet är en header, som sedan följs av type length, payload length, ID length, type, ID och till sist payload.
+
+\begin{table}
+\centering
+\begin{tabular}{ |c|c|c|c|c|c|c| }
+\hline
+\multicolumn{7}{|c|}{\textbf{NDEF Message}} \\
+\hline
+R\textsubscript{1}MB=1 & ... & R\textsubscript{r} & ... & R\textsubscript{s} & ... & R\textsubscript{t}ME=1 \\
+\hline
+\end{tabular}
+\caption{Ett NDEF meddelande består av en eller flera  records.}
+\label{tab:NDEF_Message}
+\end{table}
+
+
+Varje record utformas efter en fördefinerad struktur och består av ett antal fält. Det första fältet är en \texttt{header}, som sedan följs av \texttt{type length, payload length, ID length, type, ID} och till sist \texttt{payload}.
 
 %Bild
 %Bildtext: Record layout.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{NDEF_record_layout.jpg}
+\caption{Record layout.}
+\label{fig:record_layout}
+\end{figure}
 
 \begin{itemize}
 \item \textbf{Header.} En record header är en byte lång där varje bit har olika betydelser.
@@ -210,9 +243,16 @@ Varje record utformas efter en fördefinerad struktur och består av ett antal f
 \item \textbf{ID.} Värdet på detta fält är unikt och utgör en unik identiferare kallad URI. Records kan således skiljas åt genom att studera värdet av URI och NDEF garanterar att detta nummer är unikt genom att tillhandahålla en generator.
 \item \textbf{Payload.} Detta fält huserar applikationsdata.
 \end{itemize}
-Nedan ges ett exempel på ett NDEF-meddelande som kommer att följa med till andra avsnitt som behandlar NFC-stacken.
+I figur \ref{fig:NDEF_Message_example} ges ett exempel på ett NDEF-meddelande som kommer att följa med till andra avsnitt som behandlar NFC-stacken.
 
-(Använd referens istället för nedan!!!!!!!!!!!!!!!!!!!!!!!)
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{NDEF_Message_example.jpg}
+\caption{Exempel på ett NDEF Message.}
+\label{fig:NDEF_Message_example}
+\end{figure}
+
+(Använd referens istället för "nedan"!!!!!!!!!!!!!!!!!!!!!!!)
 
 %bild
 
@@ -220,9 +260,15 @@ Nedan ges ett exempel på ett NDEF-meddelande som kommer att följa med till and
 (Simpel NDEF exchange protocol)[källa] är det protokoll i NFC-stacken som hanterar utbytet av NDEF-meddelanden. SNEP är ett så kallat request/response protokoll, en klient skickar en SNEP-förfrågan till en server som, beroende på förfrågans innehåll, returnerar ett passande svar om det erfodras.
 
 \subparagraph{Förfrågningar}
-SNEP har specificerat förfrågningens utseende som följer.
+SNEP har specificerat förfrågningens utseende som visas i figur \ref{fig:SNEP_request_message}:
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{SNEP_request_message.jpg}
+\caption{SNEP request message.}
+\label{fig:SNEP_request_message}
+\end{figure}
 
 \begin{itemize}
 \item \textbf{Version.} Detta fält definerar vilken version av SNEP som förfrågan bygger på. Versionsfältet är indelat i två delfält kallat Major och Minor om 4-bit vardera där Major huserar heltalet av versionsnummret och Minor huserar decimaldelen av versionsnummret. För att en kunna genomföra en SNEP session måste klient och server förstå varandra och deras förmåga att förstå varandra avgörs av versionsfältet. Vid mottagande av en SNEP förfrågan kontrollerar servern versionsnumret. Stämmer numret helt överens med den version som servern brukar kan SNEP sessionen fullbordas. Stämmer Major delen men inte Minor är det möjligt att slutföra sessionen om servern anpassar sig efter klienten. Skiljer sig Major delen kan sessionen inte genomföras och servern ger avslag.
@@ -236,10 +282,22 @@ De förfrågningar en klient kan begära från en server är Continue, Get, Put 
 \textbf{Put.} En Put-förfrågan har hexadecimal kod 0x02. Klienten ber servern att ta emot det inkapslade NDEF meddelandet och inget svar erfodras av servern.  Put-förfrågan följer den generella utformningen av ett SNEP förfrågan:
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{SNEP_put_request.jpg}
+\caption{SNEP put request.}
+\label{fig:SNEP_put_request}
+\end{figure}
 
 \textbf{Get.} En Get-förfrågan har hexadecimal kod 0x01. Klienten ber servern att returnera information inkapslat i ett NDEF meddelande. Vilken information som klienten vill få från servern specificeras i NDEF-meddelandet som huseras i Get-förfrågans information-fält. 
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{SNEP_get_request.jpg}
+\caption{SNEP get request.}
+\label{fig:SNEP_get_request}
+\end{figure}
 
 Get-förfrågan skiljer sig från den generella förfrågningsstrukturen. Ytterligare ett fält förekommer, Acceptable Length, vars betydelse är att det anger hur stort NDEF-meddelandet i svarsmeddeleandet maximalt får vara. Acceptable length-fältet är 4 bytes vilket gör Get-förfrågan större än en generell förfrågan.
 
@@ -247,6 +305,12 @@ Get-förfrågan skiljer sig från den generella förfrågningsstrukturen. Ytterl
 SNEP har också specificerat svarets utseende:
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{SNEP_response_message.jpg}
+\caption{SNEP response message.}
+\label{fig:SNEP_response_message}
+\end{figure}
 
 Fälten i svaret fyller samma funktion som i förfrågningen men med mindre skillnader.
 
@@ -268,6 +332,12 @@ Alla NFC-enheter har som krav att ha en SNEP-server process körandes. På så v
 LLCP(Logical Link Control Protocol)[källa] är protokollet som sköter samtliga datalänkar med andra NFC enheter. För att öka överskådligheten hos protokollet har det delats upp i fyra centrala delar: Media access mappning, länkhanteraren, förbindelselös transport och förbindelseorienterad transport. NFC-stacken ser med dessa delar ut som figuren nedan visar.
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{NFC_stack_detail.jpg}
+\caption{NFC stack.}
+\label{fig:NFC_stack_detail}
+\end{figure}
 
 \subparagraph{Media access mappning}
 Knyter samman ovanliggande protokoll med de RF-protokoll, vilka styr tekniken som står för den faktiska överföringen av data mellan två NFC enheter. 
@@ -310,6 +380,12 @@ LTO står för Link time Out och indikerar hur länge en länk kan vara inaktiv 
 LLCP datapaket för förbindelseorienterad transport: 
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{LLCP_datapaket.jpg}
+\caption{LLCP datapaket.}
+\label{fig:LLCP_datapaket}
+\end{figure}
 
 \begin{itemize}
 \item \textbf{SAP:} Förkortning av Service Accsess Point och används som addresser vid kommunikation mellan två LLC processer. SAP kan liknas vid en brevlåda i vilken applikationer lämnar meddelanden (data) som den önskar att överföra till en applikation som kör på målenheten. Till varje SAP hör exakt en applikation. 
@@ -325,41 +401,83 @@ Nedan följer ett urval av de typer av datapaket vilka anses vara relevanta för
 \textbf{Connect}
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{LLCP_connect.jpg}
+\caption{LLCP connect.}
+\label{fig:LLCP_connect}
+\end{figure}
 
 Denna ram används när en NFC-enhet vill etablera en uppkoppling till en annan enhet. DSAP sätts till en välkänd SAP, som t.ex 0x04 vilket indikerar att sändaren vill etablera en uppkoppling med SNEP-servern som kör på målenheten. Alternativ kan SSAP sättas till 0x01 vilken indikerar att målenheten vid mottagande av denna connect-ram skall köra service discovery protocol (SDP) för att hitta en lämplig SAP. SSAP sätts till det värde applikationen som vill utväxla data över NFC blivit tilldelad. Observanta läsare lägger märke till att sequence-fältet inte finns i en Connect-ram. Detta beror på att en Connect-ram är onumrerad, vilket är fallet för många LLCP-ramar. Informationsfältet specificeras till att innehålla datalänkspecifika parametrar. Genom att undersöka PTYPE-fältet kan mottagaren utläsa vilka fält som skall närvara och vad dess innehåll betyder.
 
 \textbf{Connection Complete}
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{LLCP_connect_complete.jpg}
+\caption{LLCP connect complete.}
+\label{fig:LLCP_connect_complete}
+\end{figure}
 
 Denna ram skall ges som svar på en Connect-ram om en uppkoppling kan upprättas. DSAP sätts till Connect-ramens SSAP värde. SSAP sätts antingen till det värde som SDP returnerat, eller till det fördefinerade värdet som sändaren angav i DSAP. Precis som Connect-ramen är denna ram onumrerad och dess informationsfällt innehåller datalänks-specifika parametrar.
 
 \textbf{DM}
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{LLCP_DM.jpg}
+\caption{LLCP DM}
+\label{fig:LLCP_DM}
+\end{figure}
 
 Denna ram ges som svar på en Connect-ram när en uppkoppling inte kan etableras. Ramens betydelse är att LLC processen som skickar den inte längre lyssnar på uppkopplingen, den är logiskt avslutad. Anledningen till att uppkopplingen blivit avslutad ges i informations-fälltet. Ramen används också vid avslutande av uppkopplingen och skickas då som svar på en DISC-ram.
 
 \textbf{Information}
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{LLCP_information.png}
+\caption{LLCP information.}
+\label{fig:LLCP_information}
+\end{figure}
 
 När utbytet av Connect-ramen och CC-ramen genomförts är uppkopplingen etablerad. Utbytet av applikationsdata kan inledas. Informations-ramen är ramen som är ämnad för att överföra data mellan två NFC-enheter. För att kunna upptäcka eventuell dataförlust är denna ram numrerad. Informationsfältet innehåller i detta fall data från ovanliggande applikationer.
 
 \textbf{Symmetry}
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{LLCP_symmetri.jpg}
+\caption{LLCP symmetri.}
+\label{fig:LLCP_symmetri}
+\end{figure}
 
 Denna ram används i den tidigare beskrivna symmetri-proceduren för att undvika länk-timeout under pågående kommunikation. När en NFC-enhet har exklusiv rätt att skicka data men saknar något att skicka och önskar bibehålla datalänken genomförs symmetri-proceduren under vilken denna ram spelar en central roll.
 
 %bild
 %bildtext
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{LLCP_ack.jpg}
+\caption{LLCP ACK-ram}
+\label{fig:LLCP_ack}
+\end{figure}
 
 Denna ram används för att indikera att föregående frame togs emot korrekt när ingen nyttig data kan skickas. Detta är således LLC protokollets dedikerade ACK-ram.
 
 \textbf{DISC}
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{LLCP_DISC.jpg}
+\caption{LLCP DISC}
+\label{fig:LLCP_DISC}
+\end{figure}
 
 Används när en av parterna vill stänga ner datalänken. När en LLC process tar emot en ram av denna typ kommer den inte att skicka mer data över denna uppkoppling. Kanalen stängs ned först när sändande part mottager ett svar i form av en DM-ram.
 
@@ -373,7 +491,12 @@ I initieringsförfarandet sänds en \texttt{ATR\_REQ} från den initierande enhe
 De två första bytesen utav en \texttt{ATR\_REQ} eller \texttt{ATR\_RES}(se figur R) är $0xD4$ och $0x00$, sedan följer NFCID3 vilket är ett slumpartat identifikationsnummer vilket ska vara detsamma under en och samma kommunikations-session. Följande fem bytes i en ATR\_RES respektive fyra bytes i en ATR\_REQ (TO uteblir), är parametrar vilka sköts av NFCIP-1. Slutligen följer så kallade generella bytes vilka inleds med de magiska LLCP nummren och efter dem radas de TLV parametrar(se 3.1.1.3) upp som önskar utbytas i initieringsförfarandet.
 
 %bild
-%bildtext: Figur R. Utförandet av en ATR_RES. Bildkälla LLCP
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{LLCP_ATR_RES.png}
+\caption{Utförandet av en ATR\_RES. Bildkälla LLCP}
+\label{fig:LLCP_ATR_RES}
+\end{figure}
 
 \subparagraph{Datautbytesförfarande}
 DEP(Data Exchange Protocol) är det protokoll som följs vid utbytandet av data mellan två aktiva NFC enheter på RF-protokolls-nivå och är ett blockorienterat transportprotokoll med inbyggd felhantering och kedjemekanism. Denna mekanism används då den data vilken ska överföras inte får plats i en ram.
@@ -442,6 +565,12 @@ Först bör en utvecklare inneha kunskaper om den särskilda livscykel, se bilde
 
 %bild
 %bildtext: Bilden som är publicerad av Google(2013) beskriver en Android aktivitets livscykel. Särskilt beskriver den de olika statusar den kan befinna sig i samt de metodanrop som sker när den tar sig mellan dem.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Android_aktivitet.png}
+\caption{Bilden som är publicerad av Google(2013) beskriver en Android aktivitets livscykel. Särskilt beskriver den de olika statusar den kan befinna sig i samt de metodanrop som sker när den tar sig mellan dem.}
+\label{Fig:Android_aktivitet}
+\end{figure}
 
 För det andra måste en utecklare av Android-applikationer ha kunskap om de Android-specifika API som Google tillhandhåller. Dessa API beskriver de funktioner som är unika för Android-enheter. Där beskrivs t.ex. hur ett användargränssnitt byggs upp, hur en lokal databas sätts upp och hur applikationen kommunicerar med andra applikationer och med omvärden. Särskilt användbart för projektet är det API som specificerar kommunikation över NFC.
 
@@ -489,6 +618,12 @@ För att kontrollera PN532 NFC/RFID Shield finns ett stort antal kommandon vilka
 
 %bild
 %bildtext: figur X. Kommando- och svars-ram Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{PN532_shield_ram.jpg}
+\caption{Kommando- och svars-ram. Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.}
+\label{fig:PN532_shield_ram}
+\end{figure}
 
 \begin{itemize}
 \item Inledande bytes. Den byte som inleder en kommando-ram innehåller $0x00$.
@@ -509,15 +644,29 @@ Kontrollsumma för paket. En byte innehållande en kontrollsumma vilken satisfie
 
 De kommandon som kan nyttjas grupperas i fyra grupper, generella kommandon, RF-kommunikation, initiator och target. I gruppen generella kommandonfinns kommandon som diagnoserar NFC-chipet, läser och skriver till register samt konfigurerar skölden i viss mån. Gruppen RF-kommunikation huserar två kommandon vilka konfigurerar radio-fältet respektive används för radio-fälts reglering. Tredje gruppen, inintiator, innehåller de kommandon vilka används då PN532 NFC/RFID Shield agerar initiator till NFC-kommunikationen, och den sista gruppen omfattar de kommandon vilka används då PN532 NFC/RFID Shield är målenhet för NFC-kommunikation.
 
-Då PN532 NFC/RFID Shield har mottagit en kommando-ram korrekt sänds en ACK-ram tillbaka till sändaren vilken är uppbyggd enligt figur Y.
+Då PN532 NFC/RFID Shield har mottagit en kommando-ram korrekt sänds en ACK-ram tillbaka till sändaren vilken är uppbyggd enligt figur \ref{fig:PN532_shield_ack}.
 
 %bild
 %bildtext: figur Y. Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{PN532_shield_ack.jpg}
+\caption{Ack-ram. Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.}
+\label{fig:PN532_shield_ack}
+\end{figure}
 
-Om en kommando-ram inte mottages korrekt av PN532 NFC/RFID Shield eller om ett fel på applikationsnivå inträffar skickas en ERROR-ram till mikrokontrollern vilken är uppbyggt enligt figur Z. är detta rätt!?
+
+Om en kommando-ram inte mottages korrekt av PN532 NFC/RFID Shield eller om ett fel på applikationsnivå inträffar skickas en ERROR-ram till mikrokontrollern vilken är uppbyggt enligt figur \ref{fig:PN532_shield_error}. är detta rätt!?
 
 %bild
 %bildtext: figur Z. Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{PN532_shield_error.jpg}
+\caption{Error-ram. Bildkälla PN532 NFC/RFID Shield User manual, översatt till svenska.}
+\label{fig:PN532_shield_error}
+\end{figure}
+
 
 De kommandon som beskrivs i denna text är de vilka varit till nytta för utvecklingen av prototypen och de återstående kommandona tas ej upp, bland annat utelämnas kommandogrupperna RF-kommandon och initiator-kommandon helt då de ej nyttjas. De figurer vilka beskriver 
 
@@ -525,9 +674,19 @@ De kommandon som beskrivs i denna text är de vilka varit till nytta för utveck
 Dessa kommandon utför läsningar och skrivningar till register, diagnosering utav NFC-chipet, viss konfiguration av skölden samt att skölden kan ställas i olika vilolägen. 
 
 \subparagraph{SAMConfiguration}
-När PN532 NFC/RFID Shield startas upp befinner sig NFC-chippet i läget LowVbat, genom att anropa kommandot SAM(Security Access Module)Configuration(fotnot 1) vaknar skölden och går in i ett läge där den behandlar också alla andra kommandon. Kommandot SAMConfiguration är uppbyggt enligt figur T, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. 
+När PN532 NFC/RFID Shield startas upp befinner sig NFC-chippet i läget LowVbat, genom att anropa kommandot SAM(Security Access Module)Configuration(fotnot 1) vaknar skölden och går in i ett läge där den behandlar också alla andra kommandon. Kommandot SAMConfiguration är uppbyggt enligt tabell \ref{tab:SAMConfiguration}, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. 
 
 %bild alt. tabell
+\begin{table}
+\centering
+\begin{tabular}{ |c|c|c|c|c| }
+\hline
+$0xD4$ & $0x14$ & \texttt{Läge} & \texttt{Timeout} & \texttt{[IRQ]}\\
+\hline
+\end{tabular}
+\caption{SAMConfiguration.}
+\label{tab:SAMConfiguration}
+\end{table}
 
 \begin{itemize}
 \item 0xD4 anger att PN532 NFC/RFID Shield är mottagare av ramen.
@@ -537,10 +696,19 @@ När PN532 NFC/RFID Shield startas upp befinner sig NFC-chippet i läget LowVbat
 \item IRQ, frivilligt fält. Om en IRQ-lina ska användas för smidigare kommunikationen mot en Arduino anges 0x01, annars 0x00.
 \end{itemize}
 
-Svarsmeddelandet till SAMConfiguration är uppbyggt enligt figur S, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Det ända som svaret innehåller, förutom TFI,  är den kommandospecifika svarskoden 0x15.
+Svarsmeddelandet till SAMConfiguration är uppbyggt enligt tabell \ref{tab:svar_SAMConfiguration} vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Det ända som svaret innehåller, förutom TFI,  är den kommandospecifika svarskoden 0x15.
 
 %bild
-%bildtext: figur S.
+\begin{table}
+\centering
+\begin{tabular}{ |c|c| }
+\hline
+$0xD5$ & $0x15$ \\
+\hline
+\end{tabular}
+\caption{Svarsmeddelande till SAMConfiguration.}
+\label{tab:svar_SAMConfiguration}
+\end{table}
 
 fotnot 1: Om SAMConfiguration används för att skölden ska gå ur LowVbat läget måste Mode sättas till 0x01.  
 
@@ -549,9 +717,19 @@ fotnot 1: Om SAMConfiguration används för att skölden ska gå ur LowVbat läg
 Då PN532 NFC/RFID Shield är målenheten för kommunikationen finns ett antal kommandon som är dedikerade för detta ändmål. Dessa kommandon ger bland annat funktionalitet i form av att konfigurera skölden som en målenhet och att sända samt ta emot data.
 
 \subparagraph{TgInitAsTarget}
-För att konfigurera PN532 NFC/RFID Shield som en målenhet anropas kommandot TgInitAsTarget enligt figur D, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. 
+För att konfigurera PN532 NFC/RFID Shield som en målenhet anropas kommandot TgInitAsTarget enligt tabell \ref{tab:kommando_TgInitAsTarget}, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. 
 
-%bild
+%tabell
+\begin{table}
+\centering
+\begin{tabular}{ |c|c|c|c|c|c|c|c|c|c| }
+\hline
+$0xD4$ & $0x8C$ & \texttt{Läge} & \texttt{Mifare parametrar} & \texttt{FeliCa parametrar} & \texttt{NFCID3t} & \texttt{LEN Gt} & \texttt{Gt} & \texttt{LEN Tk} & \texttt{Tk} \\
+\hline
+\end{tabular}
+\caption{Anrop med kommandot TgInitAsTarget.}
+\label{tab:kommando_TgInitAsTarget}
+\end{table}
 
 \begin{itemize}
 \item 0xD4 anger att PN532 NFC/RFID Shield är mottagare av ramen.
@@ -571,29 +749,78 @@ För att konfigurera PN532 NFC/RFID Shield som en målenhet anropas kommandot Tg
 \item Tk, LEN Tk bytes, anger de historiska bytes vilka används i ATS när skölden emulerar en tagg av typen ISO/IEC14443-4.
 \end{itemize}
 
-Svarsmeddelandet till TgInitAsTarget är uppbyggt enligt figur R, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Svaret innehåller TFI, den kommandospecifika svarskoden 0x8D, en byte vilken indikerar i vilket läge skölden blivit konfigurerad samt det första meddelandet från initiatorn.
+Svarsmeddelandet till TgInitAsTarget är uppbyggt enligt tabell \ref{tab:svar_kommando_TgInitAsTarget}, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Svaret innehåller TFI, den kommandospecifika svarskoden $0x8D$, en byte vilken indikerar i vilket läge skölden blivit konfigurerad samt det första meddelandet från initiatorn.
 
-%bild
+%tabell
+\begin{table}
+\centering
+\begin{tabular}{ |c|c|c|c| }
+\hline
+$0xD5$ & $0x8D$ & \texttt{Läge} & \texttt{Initiatorns meddelande} \\
+\hline
+\end{tabular}
+\caption{Svar till kommandot TgInitAsTarget.}
+\label{tab:svar_kommando_TgInitAsTarget}
+\end{table}
 
 \subparagraph{TgSetData}
-Detta kommando används då data önskas skickas enligt DEP och är uppbyggt enligt figur E, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. Förutom den kommandospecifika koden innehåller ramen de bytes vilka önskas skickas. Observera att maximalt 262 bytes kan skickas åt gången och om fler ska skickas måste också kommandot TgSetMetaData användas.
+Detta kommando används då data önskas skickas enligt DEP och är uppbyggt enligt tabell \ref{tab:TgSetData}, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram. Förutom den kommandospecifika koden innehåller ramen de bytes vilka önskas skickas. Observera att maximalt 262 bytes kan skickas åt gången och om fler ska skickas måste också kommandot TgSetMetaData användas.
 
-%bild
+%tabell
 %bildtext: Figur E.
+\begin{table}
+\centering
+\begin{tabular}{ |c|c|c| }
+\hline
+$0xD4$ & $0x8E$ & \texttt{Utgående data} \\
+\hline
+\end{tabular}
+\caption{TgSetData.}
+\label{tab:TgSetData}
+\end{table}
 
-Det svar som anhålles från skölden är uppbyggt enligt figur W, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Förutom att svaret innehåller den kommandospecifika svarskoden 0x8F samt TFI finns också ett statusfält vilket indikerar om sändningen utfördes korrekt, vilket indikeras med 0x00, eller inte.
+Det svar som anhålles från skölden är uppbyggt enligt tabell \ref{tab:svar_TgSetData}, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram. Förutom att svaret innehåller den kommandospecifika svarskoden 0x8F samt TFI finns också ett statusfält vilket indikerar om sändningen utfördes korrekt, vilket indikeras med $0x00$, eller inte.
 
 %bild
-%bildtext: Figur W.
+\begin{table}
+\centering
+\begin{tabular}{ |c|c|c| }
+\hline
+$0xD5$ & $0x8F$ & \texttt{Status} \\
+\hline
+\end{tabular}
+\caption{Svar till TgSetData.}
+\label{tab:svar_TgSetData}
+\end{table}
 
 \subparagraph{TgGetData}
-Detta kommando används då data önskas hämtas enligt DEP och är uppbyggt enligt figur U, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram, och innehåller förutom TFI endast den kommandospecifika koden.
+Detta kommando används då data önskas hämtas enligt DEP och är uppbyggt enligt tabell \ref{tab:TgGetData}, vilken visar fälten TFI, PD0 ända till PDn i en kommando-ram, och innehåller förutom TFI endast den kommandospecifika koden.
 
-%bild
+%tabell
+\begin{table}
+\centering
+\begin{tabular}{ |c|c| }
+\hline
+$0xD4$ & $0x86$ \\
+\hline
+\end{tabular}
+\caption{TgGetData.}
+\label{tab:TgGetData}
+\end{table}
 
-Svaret från skölden är uppbyggt enligt figur F, vilken visar fälten TFI, PD0 ända till PDn i en svars-ram, och innehåller den kommandospecifika svarskoden, TFI, ett statusfält vilket indikerar om sändningen utfördes korrekt, vilket indikeras med 0x00, eller inte och slutligen finns också den data vilken önskade hämtas vilket kan vara upp till 262 bytes.
+Svaret från skölden är uppbyggt enligt tabell \ref{tab:svar_TgGetData} , vilken visar fälten TFI, PD0 ända till PDn i en svars-ram, och innehåller den kommandospecifika svarskoden, TFI, ett statusfält vilket indikerar om sändningen utfördes korrekt, vilket indikeras med 0x00, eller inte och slutligen finns också den data vilken önskade hämtas vilket kan vara upp till 262 bytes.
 
-%bild
+%tabell
+\begin{table}
+\centering
+\begin{tabular}{ |c|c|c|c| }
+\hline
+$0xD5$ & $0x87$ & \texttt{Status} & \texttt{Ingående data} \\
+\hline
+\end{tabular}
+\caption{Svar till TgGetData.}
+\label{tab:svar_TgGetData}
+\end{table}
 
 \section{Kravanalys och design}
 En kravspecifikation (Appendix X) utformades för hela produkten och för de ingående delarna. Kraven sammanställdes under en rigorös genomgång av vilka egenskaper och krav en användare kan ställa på en produkt av det slag som konstrueras. Förslag på egenskaper och krav på produkten gjordes av projektets medlemmar samt externa resurser såsom handledare.
@@ -733,6 +960,12 @@ Utvecklingen av låsenheten och mobilapplikationen har skett parallelt tills de 
 Utvecklingen av låsenheten beskrivs lager för lager, nerifrån och upp genom hela den implementerade NFC-stacken. NFC-stacken följer OSI-modellen, dock följs inte OSI-modellen rakt av då NFC-stacken har distruberat ut funktionalliteten olika mellan lagren och vissa av dem har slagits samman. 
 
 %bild
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{NFC_stack.jpg}
+\caption{NFC stack.}
+\label{fig:NFC_stack}
+\end{figure}
 
 De översta fyra lagren implementeras i mjukvara vilka körs på mikrokontrollern då NFC-skölden endast har RF-protokollen implementerade. Då en mikrokontroller önskar nyttja RF(Radio Frequency)-protokollen behöver kommunikation ske mot NFC-skölden, denna funktionallitet åskådligörs via ett lager mellan LLCP och RF-protokoll och beskrivs också mellan dessa avsnitt.
 
@@ -742,10 +975,16 @@ De protokoll som specifierar den fysiska överföringen av NFC-meddelanden är i
 \paragraph{Kontroll av RF-protokollens funktioner}
 Skölden har en stor mängd kommandon som kan nyttjas och de som används av projektet beskrivs i avsnitt 3.3.2 (NFC för Arduino mha PN532 NFC/RFID Shield). Källkodsbiblioteket Embedded-PN532 implementerar de kommandon vilka ger den kontroll av skölden detta arbete söker, men de parametrarna vilka skickas med ett kommando har i viss grad modifierats. Detta gjordes i samband med att sessionslagret NPP byttes ut till förmån mot SNEP(se avsnitt 6.1.4).
 
-De kommandon vilka anropas från att skölden startas upp till dess att data utbytes mot en aktiv NFC-enhet, beskrivs i tabell XIV. Observera att kommandot SAMConfigure endast anropas vid uppstart av skölden och anropas inte igen såvida inte skölden startas om. Observera också att Kommando och Respons visas i hexadecimal teckenkodning.
+De kommandon vilka anropas från att skölden startas upp till dess att data utbytes mot en aktiv NFC-enhet, beskrivs i tabell \ref{tab:PN532_kommandon}. Observera att kommandot SAMConfigure endast anropas vid uppstart av skölden och anropas inte igen såvida inte skölden startas om. Observera också att Kommando och Respons visas i hexadecimal teckenkodning.
 
 %bild
 %bildtext: Tabell XIV, omarbetat från applikation guide
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{PN532_kommandon.png}
+\caption{Kommandon från skölden.}
+\label{tab:PN532_kommandon}
+\end{figure}
 
 För att en ny uppkoppling ska ske mot en enhet måste kommandot TgInitAsTarget anropas och efter anropet väntar skölden på ett meddelande av typen ATR\_REQ från initiatorn. När ATR\_REQ inkommit returneras detta i svaret på TgInitAsTarget-kommandot, som det initiala meddelandet, och kan utläsas i tabell XIV efter de inledande bytsen 8D och 25.
 
@@ -758,16 +997,20 @@ Att byta ut SPI mot I2C var relativt enkelt då det källkodsbibliotek som följ
 \subsubsection{LLCP-lagret}
 Vid implementationen av LLCP-lagret används den officiella definitionen av protokollet som är utgivet av NFC-forum (källa). Android version 4.0 implementerar LLCP något annorlunda än Android version 2.3 vilket Embedded-PN532 är skrivet efter. Detta gjorde att befintlig kod för detta lagret behövde modifieras. Information direkt från Google kring hur protokollet är tolkat gick tyvärr inte att finna, men ett projekt hittades för kommunikation mot Android 4.0 genom att nyttja ett NFC-chip likt det som används i detta arbete(källa).  Det funna projektet var skrivet i programspråket Java och visar klart och tydligt hur LLCP ska användas för att skapa en länk mot en mobiltelefon med Android. Detta projekt används därför som en mall vid modifiering av LLCP-lagret i källkodsbibioteket Embedded-PN532. Bilden nedan visar hur server respektive klient nyttjar LLCP i (källa) projektet för att skapa samt stänga ned en länk då Android 4.0 används, och detta är också det förfarandet som Embedded-PN532 skrivs om till att utföra.
 
-%bild: som visar hur server respektive klient nyttjar LLCP enligt java-man för att skapa samt stänga ned en länk.
+%bild: som visar hur server respektive klient nyttjar LLCP enligt java-man för att skapa samt stänga ned en länk. FINNS INTE ÄNNU!
 
 \subsubsection{NPP- eller SNEP-lagret}
-NPP är det protokollet som Embedded-PN532 implementerar. Då NPP är ett protokoll som nu har blivit utbytt samt att det är relativt komplext och svårt att till fullo greppa gjordes valet att byta ut detta till förmån för SNEP. SNEP är det nya protokollet som i förhållande till NPP är väldigt rättfram och enkelt att förstå. Detta val gjordes även då det i kommunikation mot Android fortfarande går det att använda NPP då mobiltelefonen faller tillbaka på det gamla protokollet om mobiltelefonen känner av att det nya protokollet SNEP inte används. Han som gjort java projektet(Namn) visar även klart och tydligt hur protokollet SNEP ska användas för att skicka och ta emot data mellan Arduino och mobiltelefonen och används. Eftersom kommunikation med utbyte av data önskas har låskonrtollern fått funktionalitet att både agera som klient och server. Då låskontrollern agerar som klient skickas en Put-förfrågan som beskrivs i teoriavsnittet SNEP(nummer?) där de olika fälten Version, Request, Length, och Information initieras till värderna 10, 02, hur många bytes som utgör informationsfältet, respektive NDEF meddelandet där varje octet i Put-förfrågan är utformad med talbas 16. Efter att förfrågan har skickats så kommer klienten att vänta på ett svar från serven. Om överföinger gick bra så kommer klienten att ta emot svarsmeddelandet Success(se avsnitt nummer?) som indikerar att servern klarat av att genomföra Put förfrågan. Då låskontrollen agerar som server så väntar enheten på en Put-förfrågan som skickas från en klient. Uppbygnaden av en Put-förfrågan beskriv detaljerat i teoriavsnittet(nummer) 
+NPP är implementerat i Embedded-PN532 men då NPP är ett protokoll som nu har blivit utbytt, samt att det är relativt komplext och svårt att till fullo greppa, gjordes valet att byta ut detta till förmån för SNEP. Det nya protokollet SNEP är i förhållande till NPP är väldigt rättfram och enkelt att förstå. Detta val gjordes även då det i kommunikation mot Android fortfarande går det att använda NPP då Android-enheten faller tillbaka på det gamla protokollet om den känner av att det nya protokollet SNEP inte används. 
 
-peer-to-peer önskas använder bra PUT
-response 
-felkoll
+Eftersom data utbyts i båda riktningarna i kommunikationen har valet gjorts att ge låsenheten funktionalitet att agera både som klient och server, här betyder detta att låsenheten både kan skicka samt ta emot SNEP-förfrågningar. Den SNEP förfrågning vilket stöd har implementerats för är Put, vilken beskrivs i avsnitt 3.1.1.2 där också SNEP förklaras. 
 
-Skriv om hur vi använder SNEP. Visa också med BILD
+Då låsenheten agerar som klient skickas en Put-förfrågan enligt figur KAKA där fältet Version har värdet 10 vilket anger att SNEP version 1,0 används. Vidare innehåller fältet Request värdet 02 vilket är den specifika koden som anger att detta är en Put-förfrågan och Length innehåller storleken av det NDEF-meddelande vilket huseras i fältet Information. Om överföringer lyckades kommer servern skicka svarsmeddelandet Success vilket indikerar att Put-förfrågan har genomförts, annars sänds ett SNEP-svar vilket fel som uppkom.
+Figur KAKA. Figuren visar de värden vilka används i en Put-förfrågan. Delvis omarbetad från SNEP.
+
+%bild
+%bildtext: Figur KAKA. Figuren visar de värden vilka används i en Put-förfrågan. Delvis omarbetad från SNEP.
+
+När låsenheten agerar som server väntar låsenheten på att ta emot en Put-förfrågan och då denna mottagits undersöks om förfrågans SNEP-version stödjs, vilken finns i fältet Version. Om versionen stödjs tas det mottagna NDEF-meddelandet om hand, vilket huseras i fältet Information, och svarsmeddelandet Success skickas till klienten. Om versionen inte stödjs eller något annat fel uppkommer avbryts kommunikationen och förloppet måste börja om.
 
 \subsubsection{NDEF-lagret}
 NDEF(NFC Data Exchange Format) är implementerat i Embedded-PN532 och biblioteket innehåller de funktioner som arbetet eftersöker, detta medför att NDEF-lagret inte har utvecklats vidare. 
