@@ -1,87 +1,185 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
 \select@language {swedish}
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1}Inledning}{9}{section.1}
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.1}Syfte}{10}{subsection.1.1}
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.2}Utmaningar}{10}{subsection.1.2}
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.3}Omfattning}{11}{subsection.1.3}
-\contentsline {section}{\numberline {2}Metod}{12}{section.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2}Metod}{11}{section.2}
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3}Teori}{12}{section.3}
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.1}NFC}{13}{subsection.3.1}
+\defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\numberline {3.1.1}NFC Stack}{14}{subsubsection.3.1.1}
+\defcounter {refsection}{0}\relax 
 \contentsline {paragraph}{\numberline {3.1.1.1}NDEF}{15}{paragraph.3.1.1.1}
-\contentsline {paragraph}{\numberline {3.1.1.2}SNEP}{18}{paragraph.3.1.1.2}
-\contentsline {subparagraph}{F\IeC {\"o}rfr\IeC {\r a}gningar}{18}{section*.4}
-\contentsline {subparagraph}{Svarsmeddelanden}{20}{section*.5}
-\contentsline {paragraph}{\numberline {3.1.1.3}LLCP}{21}{paragraph.3.1.1.3}
-\contentsline {subparagraph}{Media access mappning}{22}{section*.6}
-\contentsline {subparagraph}{L\IeC {\"a}nkhanteraren}{22}{section*.7}
-\contentsline {subparagraph}{F\IeC {\"o}rbindelsel\IeC {\"o}s transport}{23}{section*.8}
-\contentsline {subparagraph}{F\IeC {\"o}rbindelseorienterad transport}{23}{section*.9}
-\contentsline {subparagraph}{LLCP-meddelanden}{24}{section*.10}
-\contentsline {paragraph}{\numberline {3.1.1.4}RF-protokoll}{29}{paragraph.3.1.1.4}
-\contentsline {subparagraph}{Initieringsf\IeC {\"o}rfarandet}{29}{section*.11}
-\contentsline {subparagraph}{Datautbytesf\IeC {\"o}rfarande}{30}{section*.12}
-\contentsline {subparagraph}{Deaktiveringsf\IeC {\"o}rfarande}{30}{section*.13}
-\contentsline {paragraph}{\numberline {3.1.1.5}Ett typiskt kommunikationsf\IeC {\"o}rlopp}{30}{paragraph.3.1.1.5}
-\contentsline {subparagraph}{Uppkopplingsuppr\IeC {\"a}ttande}{30}{section*.14}
-\contentsline {subparagraph}{Informationsutbyte}{31}{section*.15}
-\contentsline {subparagraph}{Uppkopplingsavslutning}{31}{section*.16}
-\contentsline {subsubsection}{\numberline {3.1.2}S\IeC {\"a}kerhet}{32}{subsubsection.3.1.2}
-\contentsline {paragraph}{\numberline {3.1.2.1}Tjuvlyssning}{32}{paragraph.3.1.2.1}
-\contentsline {paragraph}{\numberline {3.1.2.2}Datamodifiering}{33}{paragraph.3.1.2.2}
-\contentsline {paragraph}{\numberline {3.1.2.3}"Man in the middle" attack}{33}{paragraph.3.1.2.3}
-\contentsline {subsection}{\numberline {3.2}Android}{34}{subsection.3.2}
-\contentsline {subsubsection}{\numberline {3.2.1}NFC f\IeC {\"o}r Android}{35}{subsubsection.3.2.1}
-\contentsline {subsection}{\numberline {3.3}Arduino}{36}{subsection.3.3}
-\contentsline {subsubsection}{\numberline {3.3.1}Arduino-specifika k\IeC {\"a}llkodsbibliotek}{37}{subsubsection.3.3.1}
-\contentsline {subsubsection}{\numberline {3.3.2}NFC f\IeC {\"o}r Arduino mha PN532 NFC/RFID Shield}{38}{subsubsection.3.3.2}
-\contentsline {paragraph}{\numberline {3.3.2.1}Generella Kommandon till PN532 NFC/RFID Shield}{41}{paragraph.3.3.2.1}
-\contentsline {subparagraph}{SAMConfiguration}{41}{section*.17}
-\contentsline {paragraph}{\numberline {3.3.2.2}Kommandon till PN532 NFC/RFID Shield d\IeC {\r a} enheten agerar m\IeC {\r a}lenhet}{42}{paragraph.3.3.2.2}
-\contentsline {subparagraph}{TgInitAsTarget}{42}{section*.18}
-\contentsline {subparagraph}{TgSetData}{43}{section*.19}
-\contentsline {subparagraph}{TgGetData}{43}{section*.20}
-\contentsline {section}{\numberline {4}Kravanalys och design}{44}{section.4}
-\contentsline {subsection}{\numberline {4.1}Produktkrav}{44}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Kommunikationen mellan enheterna}{45}{subsection.4.2}
-\contentsline {subsubsection}{\numberline {4.2.1}Kommunikationsf\IeC {\"o}rlopp}{45}{subsubsection.4.2.1}
-\contentsline {subparagraph}{Typisk uppl\IeC {\r a}sning}{46}{section*.21}
-\contentsline {subparagraph}{Kommunikationsf\IeC {\"o}rlopp vid distribuering av nycklar }{46}{section*.22}
-\contentsline {subsubsection}{\numberline {4.2.2}Meddelandetyper}{47}{subsubsection.4.2.2}
-\contentsline {subsubsection}{\numberline {4.2.3}S\IeC {\"a}ker kommunikation}{47}{subsubsection.4.2.3}
-\contentsline {section}{\numberline {5}Material och verktyg}{48}{section.5}
-\contentsline {subsection}{\numberline {5.1}Mikrokontroller}{48}{subsection.5.1}
-\contentsline {subsubsection}{\numberline {5.1.1}Utvecklingsmilj\IeC {\"o} och programspr\IeC {\r a}k}{48}{subsubsection.5.1.1}
-\contentsline {subsubsection}{\numberline {5.1.2}Implementerade och intressant protokoll samt specifikationer}{49}{subsubsection.5.1.2}
-\contentsline {subsubsection}{\numberline {5.1.3}Val av k\IeC {\"a}llkodsbibliotek f\IeC {\"o}r implementation av NFC-stacken}{49}{subsubsection.5.1.3}
-\contentsline {subsubsection}{\numberline {5.1.4} Val av k\IeC {\"a}llkodbibliotek f\IeC {\"o}r implementation av kommunikationss\IeC {\"a}kerhet}{50}{subsubsection.5.1.4}
-\contentsline {subsection}{\numberline {5.2}Mobilapplikation}{51}{subsection.5.2}
-\contentsline {subsubsection}{\numberline {5.2.1}Utvecklingsmilj\IeC {\"o} och programspr\IeC {\r a}k}{51}{subsubsection.5.2.1}
-\contentsline {subsubsection}{\numberline {5.2.2}Anv\IeC {\"a}nda API:er}{52}{subsubsection.5.2.2}
-\contentsline {section}{\numberline {6}Genomf\IeC {\"o}rande}{52}{section.6}
-\contentsline {subsection}{\numberline {6.1}Utveckling av l\IeC {\r a}senheten}{52}{subsection.6.1}
-\contentsline {subsubsection}{\numberline {6.1.1}RF-protokoll-lagret}{53}{subsubsection.6.1.1}
-\contentsline {paragraph}{\numberline {6.1.1.1}Kontroll av RF-protokollens funktioner}{54}{paragraph.6.1.1.1}
-\contentsline {subsubsection}{\numberline {6.1.2}Kommunikation mellan Arduino och NFC-sk\IeC {\"o}ld}{55}{subsubsection.6.1.2}
-\contentsline {subsubsection}{\numberline {6.1.3}LLCP-lagret}{56}{subsubsection.6.1.3}
-\contentsline {subsubsection}{\numberline {6.1.4}NPP- eller SNEP-lagret}{56}{subsubsection.6.1.4}
-\contentsline {subsubsection}{\numberline {6.1.5}NDEF-lagret}{57}{subsubsection.6.1.5}
-\contentsline {subsubsection}{\numberline {6.1.6}Applikationen, den som snurrar i \texttt {loop()}}{57}{subsubsection.6.1.6}
-\contentsline {subsubsection}{\numberline {6.1.7}Fysisk implementering - \IeC {\"a}r den aktuell?}{58}{subsubsection.6.1.7}
-\contentsline {subsection}{\numberline {6.2}Utveckling av mobilapplikationen}{58}{subsection.6.2}
-\contentsline {subsection}{\numberline {6.3}Utveckling av en prototyp best\IeC {\r a}ende av b\IeC {\r a}da enhterna}{59}{subsection.6.3}
-\contentsline {section}{\numberline {7}Resultat}{59}{section.7}
-\contentsline {subsection}{\numberline {7.1}Produkten som helhet}{59}{subsection.7.1}
-\contentsline {subsection}{\numberline {7.2}Mobilapplikationen}{60}{subsection.7.2}
-\contentsline {subparagraph}{\IeC {\"O}vergripande design}{61}{section*.23}
-\contentsline {subparagraph}{Login}{61}{section*.24}
-\contentsline {subparagraph}{Main}{61}{section*.25}
-\contentsline {subparagraph}{Success och Denied}{61}{section*.26}
-\contentsline {subparagraph}{Settings}{62}{section*.27}
-\contentsline {subparagraph}{Password}{62}{section*.28}
-\contentsline {subparagraph}{Keys}{62}{section*.29}
-\contentsline {subsection}{\numberline {7.3}L\IeC {\r a}senheten}{62}{subsection.7.3}
-\contentsline {section}{\numberline {8}Diskussion}{63}{section.8}
-\contentsline {subsection}{\numberline {8.1}Produkten}{63}{subsection.8.1}
-\contentsline {subsection}{\numberline {8.2}Arduino}{63}{subsection.8.2}
-\contentsline {subsection}{\numberline {8.3}Mobilapplikationen}{63}{subsection.8.3}
-\contentsline {section}{\numberline {9}Slutsats}{63}{section.9}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.1.1.2}SNEP}{16}{paragraph.3.1.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{F\IeC {\"o}rfr\IeC {\r a}gningar}{16}{section*.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Svarsmeddelanden}{17}{section*.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.1.1.3}LLCP}{18}{paragraph.3.1.1.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Media access mappning}{19}{section*.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{L\IeC {\"a}nkhanteraren}{19}{section*.7}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{F\IeC {\"o}rbindelsel\IeC {\"o}s transport}{19}{section*.8}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{F\IeC {\"o}rbindelseorienterad transport}{19}{section*.9}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{LLCP-meddelanden}{21}{section*.10}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.1.1.4}RF-protokoll}{24}{paragraph.3.1.1.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Initieringsf\IeC {\"o}rfarandet}{24}{section*.11}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Datautbytesf\IeC {\"o}rfarande}{25}{section*.12}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Deaktiveringsf\IeC {\"o}rfarande}{25}{section*.13}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.1.1.5}Ett typiskt kommunikationsf\IeC {\"o}rlopp}{25}{paragraph.3.1.1.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Initieringsf\IeC {\"o}rfarande}{25}{section*.14}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Uppkopplingsuppr\IeC {\"a}ttande}{25}{section*.15}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Informationsutbyte}{26}{section*.16}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Uppkopplingsavslutning}{26}{section*.17}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.1.2}S\IeC {\"a}kerhet}{26}{subsubsection.3.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.1.2.1}Tjuvlyssning}{27}{paragraph.3.1.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.1.2.2}Datamodifiering}{28}{paragraph.3.1.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.1.2.3}"Man in the middle" attack}{29}{paragraph.3.1.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.1.2.4}Kryptering}{29}{paragraph.3.1.2.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2}Android}{31}{subsection.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.2.1}NFC f\IeC {\"o}r Android}{32}{subsubsection.3.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3}Arduino}{33}{subsection.3.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.1}Arduino-specifika k\IeC {\"a}llkodsbibliotek}{34}{subsubsection.3.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.2}NFC-sk\IeC {\"o}lden PN532 NFC/RFID Shield}{34}{subsubsection.3.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.3.2.1}Generella Kommandon till sk\IeC {\"o}lden}{36}{paragraph.3.3.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{SAMConfiguration}{36}{section*.18}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {3.3.2.2}Kommandon till sk\IeC {\"o}lden vid l\IeC {\"a}ge m\IeC {\r a}lenhet}{37}{paragraph.3.3.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{TgInitAsTarget}{37}{section*.19}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{TgSetData}{38}{section*.20}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{TgGetData}{38}{section*.21}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4}Kravanalys och design}{39}{section.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.1}Produktkrav}{39}{subsection.4.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2}Kommunikationen mellan enheterna}{39}{subsection.4.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.2.1}Kommunikationsf\IeC {\"o}rlopp}{40}{subsubsection.4.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Typisk uppl\IeC {\r a}sning}{40}{section*.22}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Kommunikationsf\IeC {\"o}rlopp vid distribuering av nycklar}{41}{section*.23}
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Kommunikationsf\IeC {\"o}rlopp vid \IeC {\"a}ndring av l\IeC {\r a}senhetens nyckel}{42}{section*.24}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.2.2}Meddelandetyper}{42}{subsubsection.4.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.2.3}S\IeC {\"a}ker kommunikation}{43}{subsubsection.4.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5}Material och verktyg}{43}{section.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.1}Mobilapplikation}{43}{subsection.5.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.1.1}Utvecklingsverktyg}{44}{subsubsection.5.1.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.1.2}Anv\IeC {\"a}nda API:er}{44}{subsubsection.5.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2}L\IeC {\r a}senhet}{45}{subsection.5.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.2.1}Utvecklingsverktyg}{45}{subsubsection.5.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.2.2}K\IeC {\"a}llkodsbibliotek f\IeC {\"o}r NFC-stacken}{45}{subsubsection.5.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.2.3}K\IeC {\"a}llkodsbibliotek f\IeC {\"o}r kommunikationss\IeC {\"a}kerhet}{46}{subsubsection.5.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {5.2.4}Protokoll, specifikationer och k\IeC {\"a}llkodsbibliotek}{47}{subsubsection.5.2.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6}Genomf\IeC {\"o}rande}{48}{section.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.1}Utveckling av mobilapplikationen}{48}{subsection.6.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2}Utveckling av l\IeC {\r a}senheten}{49}{subsection.6.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.2.1}RF-lagret}{50}{subsubsection.6.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\numberline {6.2.1.1}Kontroll av PN532 NFC/RFID Shield}{50}{paragraph.6.2.1.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.2.2}Kommunikationen mellan Arduino och NFC-sk\IeC {\"o}ld}{51}{subsubsection.6.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.2.3}LLCP-lagret}{51}{subsubsection.6.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.2.4}NPP- eller SNEP-lagret}{52}{subsubsection.6.2.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.2.5}NDEF-lagret}{52}{subsubsection.6.2.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.2.6}Applikationen, den som snurrar i \texttt {loop()}}{53}{subsubsection.6.2.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.2.7}Mjukvara med inbyggd s\IeC {\"a}kerhet}{53}{subsubsection.6.2.7}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.2.8}Fysisk implementering}{55}{subsubsection.6.2.8}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7}Resultat}{55}{section.7}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {7.1}Produkten som helhet}{55}{subsection.7.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {7.2}Mobilapplikationen}{56}{subsection.7.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {7.2.1}\IeC {\"O}vergripande design}{56}{subsubsection.7.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {7.2.2}Login}{57}{subsubsection.7.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {7.2.3}Main}{57}{subsubsection.7.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {7.2.4}Success och Denied}{58}{subsubsection.7.2.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {7.2.5}Settings}{58}{subsubsection.7.2.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {7.2.6}Password}{58}{subsubsection.7.2.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {7.2.7}Keys}{58}{subsubsection.7.2.7}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {7.3}L\IeC {\r a}senheten}{59}{subsection.7.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {8}Diskussion}{61}{section.8}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {8.1}Prototypen som helhet}{61}{subsection.8.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {8.2}Mobilapplikationen}{63}{subsection.8.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {8.3}L\IeC {\r a}senheten}{63}{subsection.8.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {8.3.1}Arduino}{63}{subsubsection.8.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {8.3.2}Implementering}{64}{subsubsection.8.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {9}Slutsats}{66}{section.9}
