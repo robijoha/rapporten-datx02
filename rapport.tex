@@ -23,8 +23,8 @@
 		Daniel Moreau\\ 
 		Kristofer Tapper\\}
 
-\maketitle
-\newpage
+%\maketitle
+%\newpage
 
 \section*{Förord}
 Denna rapport ingår i ett kandidatarbete utfört vid Institutionen för Data- och informationsteknik, Chalmers tekniska högskola under våren 2013. Rapporten beskriver utvecklingen av ett NFC-baserat låssystem bestående av en Android-applikation samt mjukvara till en mikrokontroller av Arduino-typ.
@@ -35,7 +35,12 @@ Projektgruppen önskar tacka Lars Svensson för den tid han har lagt ner för at
 
 \renewcommand{\abstractname}{Abstract}
 \begin{abstract}
-In english motherfucker.
+Today, the smartphone is a part of everyday life and is under constant development to handle more task for its users. The tasks, which are integrated in the smartphones, are now one less thing a user doesn’t need to carry. The purpose of this project is to replace the key ring by making the smartphone capable of unlocking doors. Hence, the report descibes how a prototype of a locking system designed and implemented, and this is also the purpose of the report.
+
+In order to provide the desired functionality, a locking device has been developed around the Arduino platform which has the ability to control an electric bolt. Furthermore, a smartpone application for Android has been developed. The application provides the user with an interface which provides the ability to interact with the locking system. The smartphone application communicates with locking system through NFC(Near Field Communication).
+
+The security of the system is that the user authenticates against the smartphone application with a user-selected PIN code. Furthermore, the communication between the two systems is partly encrypted with RSA encryption algorithm with 512 bit keys.
+
 \end{abstract}
 \newpage
 
@@ -45,7 +50,7 @@ Mobiltelefonen utökas idag ständigt till att klara av att utföra fler och fle
 
 För att kunna erbjuda den önskade funktionaliteten har en låsenhet utvecklats kring Arduino-plattformen vilken har möjligheten att styra en elektrisk låskolv. Vidare har en mobilapplikation för Android utvecklats, vilken användaren använder för att kunna låsa eller låsa upp en dörr med en integrerad låsenhet. Mobilapplikationen kommunicerar med låsenheten via NFC(Near Field Communication).
 
-Säkerheten i systemet består i att användaren verifierar sig mot mobilapplikationen med förvald PIN-kod och kommunikationen är krypterad med krypteringsalgoritmen RSA\footnote{Efter upphovsmännen Ron Rivest, Adi Shamir och Len Adleman} med 512 bitars nycklar.
+Säkerheten i systemet består i att användaren verifierar sig mot mobilapplikationen med förvald PIN-kod och kommunikationen är krypterad med krypteringsalgoritmen RSA med 512 bitars nycklar.
 
 %Slutsatser
 \end{abstract}
@@ -53,40 +58,41 @@ Säkerheten i systemet består i att användaren verifierar sig mot mobilapplika
 
 \section*{Ordlista/Terminologi}
 \begin{description}
-\item[Aktivitet] En Java-klass som representerar en enstaka fokuserad uppgift. Ses vanligen som en skärm i Android.
-\item[Användare] En person som använder mobilapplikationen.
-\item[Android] Ett öppet mobilt operativsystem för främst smartphones och pekplattor.
+\item[Aktivitet] En Java-klass vilken representerar en enstaka fokuserad uppgift i Android, vanligen en skärm.
+\item[Användare] En person vilken använder mobilapplikationen.
+\item[Android] Ett öppet mobilt operativsystem för främst smarttelefoner och pekplattor.
 \item[Android beam] En teknologi för att sända data mellan två Androidenheter via NFC.
 \item[API] (\textit{Application Programming Interface}) - en regeluppsättning för hur en viss programvara kan kommunicera mot annan programvara.
 \item[Bluetooth] Standard för trådlös kommunikation mellan enheter.
 \item[Börkrav] Krav som bör ha uppfyllt för en bra produkt
-\item[Ciphertext] 
+\item[Ciphertext] Krypterad text, motsatsen till \textit{plaintext}.
 \item[DEP](\textit{Data Exchange Protocol}) - ett transportprotokoll på RF-nivå.
-\item[DSAP] Destination service access point, adress som utgör mål för NFC kommunikation.
+\item[DSAP] (\textit{Destination service access point}) - adress vilken utgör mål för NFC kommunikation.
 \item[Key-value-store] Abstrakt datatyp bestående av en samling av par där nyckeln är unik.
-\item[Kryptoanalys]
-\item[Kryptosystem] 
-\item[LLCP](\textit{Logical Link Control Protocol})  Det protokoll som dikterar hur NFC-kommunikation sköts på länknivå.
+\item[Kryptoanalys] Läran om att hitta svagheter i eller knäcka krypotosystem utan kännedom om dess hemliga nycklar eller om vilka algoritmer utnyttjas. 
+\item[Kryptosystem] När termen kryptosystem används syftas algoritmer eller modeller vilka krävs för att implementera kryptering. 
+\item[LLC] Den process vilken hanterar LLCP.
+\item[LLCP](\textit{Logical Link Control Protocol})- Det protokoll vilket dikterar hur NFC-kommunikation sköts på länknivå.
 \item[Låsenhet] Den del utav den utvecklade prototypen vilken är integrerad i låset.
-\item[Manifest] Är en fil i ett Androidproject som specificerar globala inställningar för applikationen.
+\item[Manifest] En fil i ett Androidproject vilken specificerar globala inställningar för applikationen.
 \item[Material] De fysiska delarna vilken prototypen utgörs av.
-\item[Mobil plånbok] En ansats till att ersätta plånboken med en applikation i en smart telefon.
+\item[Mobil plånbok] En ansats till att ersätta plånboken med en applikation i en smarttelefon.
 \item[NFC] (\textit{Near Field Communication}) - En trådlös kommunikationsteknik över korta avstånd. 
-\item[NFC-Forum] En organisation med målet att sprida och utveckla teknologin NFC.
-\item[NDEF] (\textit{NFC Data Exchange Format}) Ett dataformat som specificerar hur data skall skickas och vad det är för data som skickas.
+\item[NFC Forum] En organisation med målet att sprida och utveckla teknologin NFC.
+\item[NDEF] (\textit{NFC Data Exchange Format}) Ett dataformat vilket specificerar hur data skall skickas och vad det är för data som skickas.
 \item[OSI-modellen] en konceptuell modell för datorkommunikation i 7 lager.
-\item[Plaintext] Klartext, ett okrypterat meddelande, används i krypteringssammanhang
-\item[Primärnyckel] Unik kolumn(er) i en databas.
-\item[Relationsdatabas] Databas där information är organiserad i relationer.
-\item[RF] Radiofrekvens.
-\item[RSA] Algoritm som används vid asymmetrisk kryptering.
-\item[SDP] (Service Discovery Protocol)  är ett protkoll som används när avsändare inte känner DSAP hos målenhet.
-\item[Server] Är ett datorsystem som har till uppgift att serva andra system.
-\item[Skallkrav] Krav som skall vara uppfyllda i prototypen.
-\item[Smart telefon] En mobil enhet som kan användas både som avancerad mobiltelefon och som handdator.
-\item[SNEP] (Simple NDEF exchange protocol) Detta protokoll beskriver utbytet av data vid användning av NFC.
-\item[SSAP] (Source service access point)  Den adress som brukande applikation tilldelats vid användandet av NFC.
-\item[Target] Målenhet för NFC kommunikation
+\item[PDU] \textit{Protocol Data Unit} - Ett datapaket utformad i enlighet med de regler som gäller i för ett protokoll inom ett lager.
+\item[RF] \textit{Radio frequency} - Är en frekvens i området ca 3 kHz till 300 GHz.
+\item[RSA] (\textit{Ron Rivest, Adi Shamir och Leonard Adleman}) - Algoritm vilken används vid asymmetrisk kryptering.
+\item[SDP] (\textit{Service Discovery Protocol}) - Ett protokoll vilket används när en avsändare inte känner till DSAP värdet för målenheten.
+\item[Server] Ett datorsystem vilken har till uppgift att serva andra system.
+\item[Skallkrav] Krav vilka skall vara uppfyllda i prototypen.
+\item[Smarttelefon] En mobil enhet som kan användas både som avancerad mobiltelefon och handdator.
+\item[SNEP] (\textit{Simple NDEF exchange protocol}) - Ett protokoll beskriver utbytet av data vid användning av NFC.
+\item[SSAP] (\textit{Source service access point}) - Den adress vilken brukande applikation tilldelats vid användandet av NFC.
+\item[SQLite] En liten och lättviktig relationsdatabas.
+\item[Target] Målenhet för NFC kommunikation.
+\item[URI] (\textit{Uniform Resource Identifier}) - Sträng vilken används för att identifiera eller namnge en resurs.
 \item[Verktyg] Källkodsbibliotek, utvecklingmiljöer och specifikationer.
 \item[Wifi] Teknik för trådlösa nätverk.
 \end{description}
@@ -100,36 +106,49 @@ Säkerheten i systemet består i att användaren verifierar sig mot mobilapplika
 
 
 \section{Inledning}
-När mobiltelefonen först lanserades var den stor, otymplig och dyr, med kommunikation som enda syfte. Sedan dess har utvecklingen eskalerat kraftigt och allt fler funktioner har integrerats, medan själva mobiltelefonen har gjorts mindre, smidigare och mer tillgänglig för allmänheten. Idag äger i princip alla svenskar en mobiltelefon och byter dessutom dessa ofta, då det är både relativt billigt att köpa en ny samt att tekniken snabbt framskrider. I och med den stora efterfrågan på mobiltelefoner är branschen hårdare än någonsin för producenterna och för att deras produkter ska bli konkurrenskraftiga på den ständigt utvecklande marknaden måste produkterna oupphörligt innehålla nya och smartare funktioner.
+\label{Inledning}
+När mobiltelefonen först lanserades var den stor, otymplig och dyr, med kommunikation som enda syfte. Sedan dess har utvecklingen eskalerat kraftigt och allt fler funktioner har integrerats, medan själva mobiltelefonen har gjorts mindre, smidigare och mer tillgänglig för allmänheten. Idag äger i princip alla svenskar en mobiltelefon och byter dessutom dessa ofta (MTB, 2013), då det är både relativt billigt att köpa en ny samt att tekniken snabbt framskrider. I och med den stora efterfrågan på mobiltelefoner är branschen hårdare än någonsin för producenterna och för att deras produkter ska bli konkurrenskraftiga på den ständigt utvecklande marknaden måste produkterna oupphörligt innehålla nya och smartare funktioner.
 
-På senare tid har övergången till så kallade smarta telefoner ytterligare bidragit till att öka funktionaliteten hos mobiltelefonen. Numera är den inte enbart ett redskap för kommunikation, utan en enhet med lika många eller till och med fler funktioner än en persondator. En av anledningarna till denna utveckling är framstegen inom integrerade kretsar och dess tillverkningsteknik. Dessa faktorer har bidragit till att fler transistorer kan placeras på en mindre yta (Intel Corporation, 2005) och därmed göra elektronikkomponenter både mindre, strömsnålare, snabbare och mer funktionella. Den direkta följden av detta är att mobiltelefonen nu kan inrymma både funktionaliteten av fler kringenheter, samt inneha kraft nog att hantera dem alla.\\
-Wifi och Bluetooth är exempel på tekniker för kommunikation vilka i stort sett alltid finns inbyggt i en mobiltelefon och nu, vilket Deffree (2012) skriver, börjar även en ny kommunikationsteknik få allt större utbredning, NFC (Near Field Communication). Detta är en teknik för tillförlitlig kommunikation över korta avstånd, vilken bland annat ligger till grund för en senare ansats att försöka ersätta något vi alltid bär med oss, plånboken. Tanken med denna produkt som i många fall kallas den mobila plånboken, vilken Timalsina (2012) beskriver, är att göra anspråk på att ersätta våra kontanter, rabatt- och kreditkort med programvara i mobiltelefonen.\\
-Idén bakom detta arbete baseras på samma tankegångar vilka ligger bakom utvecklingen av den mobila plånboken; att ersätta något vi alltid bär med oss. Kandidatarbetet åsyftar till att ersätta nyckeln genom att utveckla en prototyp av ett låssystem som tillåter användaren att på ett snabbt och bekvämt sätt låsa upp dörren till sitt hem med sin mobiltelefon. För att möjliggöra denna funktionalitet används samma kommunikationsteknik som ligger till grund för den mobila plånboken, NFC.\\
-Resultatet av kandidatarbetet kan vara en mycket åtråvärd produkt för privatpersoner vilka är trötta på att leta efter sina hemnycklar samt önskar en flexiblare lösning än den klassiska nyckeln. Målet är att ytterligare följa trenden mot en allt mer funktionell mobiltelefon genom att också använda den som en nyckel.\\
-Visionen för en färdig produkt av detta slag, och alltså inte för resultatet av detta kandidatarbete, är att produkten ska kunna användas i större företag där det finns hundratals dörrar som utrustats med den utvecklade låsenheten samt tusentals anställda som alla använder sin mobiltelefon för att kontrollera låsenheterna. Många accessnivåer kan finnas där en specifik användare kan ingå i valfritt antal. Produkten kan underhållas av en central enhet som snabbt, smidigt och säkert kan konfigurera om systemet efter givna instruktioner.\\
-Det finns också andra visioner för en färdig produkt av detta slag. Låssystemet behöver nödvändigtvis inte vara ett stort, relativt komplext och centraladministrerat system utan kan istället vara litet, simpelt och mobilt system vilket kan användas i cykellås eller hänglås.
+På senare tid har övergången till så kallade smarta telefoner ytterligare bidragit till att öka funktionaliteten hos mobiltelefonen. Numera är den inte enbart ett redskap för kommunikation, utan en enhet med lika många eller till och med fler funktioner än en persondator. En av anledningarna till denna utveckling är framstegen inom integrerade kretsar och dess tillverkningsteknik. Dessa faktorer har bidragit till att fler transistorer kan placeras på en mindre yta (Intel Corporation, 2005) och därmed göra elektronikkomponenter både mindre, strömsnålare, snabbare och mer funktionella. Den direkta följden av detta är att mobiltelefonen nu kan inrymma både funktionaliteten av fler kringenheter, samt inneha kraft nog att hantera dem alla.
+
+Wifi och Bluetooth är exempel på tekniker för kommunikation vilka i stort sett alltid finns inbyggt i en mobiltelefon och nu, vilket Deffree (2012) beskriver, börjar även en ny kommunikationsteknik få allt större utbredning, NFC (Near Field Communication). Detta är en teknik för tillförlitlig kommunikation över korta avstånd, vilken bland annat ligger till grund för en senare ansats att försöka ersätta något vi alltid bär med oss, plånboken. Tanken med denna produkt vilken i många fall kallas den mobila plånboken, vilken Gunn (2011) beskriver, är att göra anspråk på att ersätta våra kontanter, rabatt- och kreditkort med programvara i mobiltelefonen.
+
+Idén bakom detta arbete baseras på samma tankegångar vilka ligger bakom utvecklingen av den mobila plånboken; att ersätta något vi alltid bär med oss. Kandidatarbetet åsyftar till att ersätta nyckeln genom att utveckla en prototyp av ett låssystem vilket tillåter användaren att på ett snabbt och bekvämt sätt låsa upp dörren till sitt hem med sin mobiltelefon. För att möjliggöra denna funktionalitet används samma kommunikationsteknik vilken ligger till grund för den mobila plånboken, NFC.
+
+Resultatet av kandidatarbetet kan vara en mycket åtråvärd produkt för privatpersoner vilka är trötta på att leta efter sina hemnycklar samt önskar en flexiblare lösning än den klassiska nyckeln. Målet är att ytterligare följa trenden mot en allt mer funktionell mobiltelefon genom att också använda den som en nyckel.
+
+Visionen för en färdig produkt av detta slag, och alltså inte för resultatet av detta kandidatarbete, är att produkten ska kunna användas i större företag där det finns hundratals dörrar vilka utrustats med den utvecklade låsenheten samt tusentals anställda vilka alla använder sin mobiltelefon för att kontrollera låsenheterna. Många accessnivåer kan finnas där en specifik användare kan ingå i valfritt antal. Produkten kan underhållas av en central enhet vilken snabbt, smidigt och säkert kan konfigurera om systemet efter givna instruktioner.
+
+Det finns också andra visioner för en färdig produkt av detta slag. Låssystemet behöver nödvändigtvis inte vara ett stort, komplext och centraladministrerat system utan kan istället vara litet, simpelt och mobilt system vilket kan användas i cykellås eller hänglås. 
+
+
 \subsection{Syfte}
-Syftet med rapporten är att redogöra för hur en prototyp av ett låssystem designas och implementeras. Låssystemet består av en mobilapplikation och en mikrokontroller där mikrokontrollern är integrerad i låset samt exekverar egenutvecklad mjukvara. Skulle det visa sig att produkten inte uppfyller kravspecifikationen(se bilaga HAJ) ska en analys genomföras i vilken en fullständig slutprodukt beskrivs teoretiskt.
+\label{Syfte}
+Syftet med rapporten är att redogöra för hur en prototyp av ett låssystem designas och implementeras. Låssystemet består av en mobilapplikation och en mikrokontroller där mikrokontrollern är integrerad i låset samt exekverar egenutvecklad mjukvara. Skulle det visa sig att produkten inte uppfyller kravspecifikationen(se Appendix A) ska en analys genomföras i vilken en fullständig slutprodukt beskrivs teoretiskt.
+
 
 \subsection{Utmaningar}
-Under planeringsfasen av låssystemet identifierades tre huvudsakliga utmaningar vilka beskrivs punktvis nedan.
+\label{Utmaningar}
+Under den initiala fasen av låssystemets utveckling identifierades tre huvudsakliga utmaningar vilka beskrivs punktvis nedan.
 
 \begin{itemize}
+\item Stora delar av NFC:s kommunikationsstack måste implementeras för mikrokontrollern och den måste utformas efter hur Androids NFC-stack är uppbyggd. Att implementera denna kommunikationsstack medför en större utmaning då den är komplex och innehåller ett flertal olika nivåer. Genom att studera Androids källkod, \textcite{online:Android_source_a}, framgår det också att dokumentation kring NFC-implementationen är bristfällig, vilket medför ytterligare svårigheter. 
 
-\item Stora delar av NFC:s kommunikationsstack måste implementeras för mikrokontrollern och den måste utformas efter hur Androids NFC-stack är uppbyggd. Att implementera denna kommunikationsstack medför en större utmaning då den är relativt komplex, innehåller ett flertal olika nivåer, och dokumentation kring Androids implementation är bristfällig. någon källa här kanske??
+\item Att implementera en Android-applikation vilken ska innehålla funktioner för att kommunicera mot mikrokontrollern via NFC. Androidutveckling medför ytterligare svårigheter jämfört med vanlig mjukvaruutveckling då hänsyn måste tas till Androids egenheter, vilka beskrivs närmare i teoriavsnitt 3.2. En förståelse för de källkodsbibliotek vilka hanterar NFC-kommunikationen måste också byggas upp.
 
-\item Att implementera en Android-applikation vilken ska innehålla funktioner för att kommunicera mot mikrokontrollern via NFC. Androidutveckling medför ytterligare svårigheter jämfört med vanlig mjukvaruutveckling då hänsyn måste tas till Androids egenheter, vilka beskrivs närmare i teoriavsnitt 3.2. En förståelse för de källkodsbibliotek vilka styr NFC-kommunikationen måste också byggas upp. 
-
-\item Att implementera säkerhet vid NFC-kommunikation mellan två enheter vilka använder olika programmeringsspråk. Då en mikrokontroller generellt inte har mycket minne eller hög klockfrekvens kan dessa egenskaper skapa utmaningar då säkerhet i form av kryptering ofta kräver omfattande beräkningskapacitet, vilket beskrivs närmare i teoriavsnitt 3.1.2.4. Den utmaningen vilken uppkommer då olika programmeringsspråk används är problem med varierande datarepresentationer och implementationer av funktioner, metoder och klasser.
-
+\item Att implementera säkerhet vid NFC-kommunikation mellan två enheter vilka använder olika programmeringsspråk. Då en mikrokontroller generellt inte har mycket minne eller hög klockfrekvens kan dessa egenskaper skapa utmaningar då säkerhet i form av kryptering ofta kräver omfattande beräkningskapacitet, vilket beskrivs närmare i teoriavsnitt 3.1.2.4. Den utmaning vilken uppkommer då olika programmeringsspråk används är problem med varierande datarepresentationer och implementationer av funktioner, metoder och klasser.
 \end{itemize}
 
 \subsection{Omfattning}
-Rapporten beskriver endast processen för utvecklingen av en prototyp utav ett låssystem vilket beskrivs i avsnitt 4. Vidare beskriver rapporten de nödvändiga förkunskaperna vilka krävs för utvecklingen av en sådan prototyp. Prototypen skall kortfattat nyttja kommunikation via NFC med applicerad säkerhet och därför är förkunskaper inom dessa ämnen nödvändiga.\\
-Mobilapplikationen begränsas till endast Android eftersom det är lättillgängligt, välkänt och lämpligt för användningsområdet. Denna avgränsning kommer också naturligt av att det bara finns stöd för NFC hos ett fåtal telefoner där merparten av dem är baserade på Android.\\
-Låsenheten baseras på en mikrokontroller ur Arduino-plattformen då plattformen är användarvänlig (McRoberts, 2010) , har en relativt låg prisbild samt att flertalet källkodsbibliotek finns vilka kan underlätta implementeringen av låsenheten. Vidare har Arduino-plattformen stöd för NFC i form av ett färdigutvecklat påstickskort, en så kallad sköld(fotnot 1), med tillhörande källkodsbibliotek.\\
-Fokus ligger på att utveckla en prototyp innehållande en låsenhet samt tillhörande mobilapplikation för privatpersoner, alltså inte för ett större företag. Då flera låsenheter eller flera användare av mobilapplikationen läggs till ökar komplexiteten för hela projektet och andra krav kommer att ställas på lösningen.\\
-(fotnot 1) från engelskans shield
+\label{Omfattning}
+Rapporten beskriver endast processen för utvecklingen av en prototyp utav ett låssystem vilket beskrivs i avsnitt 4. Vidare beskriver rapporten de nödvändiga förkunskaperna vilka krävs för utvecklingen av en sådan prototyp. Dessa förkunskaper innehåller i stort hur kommunikation via NFC implementeras samt hur säkerhet appliceras på denna kommunikationsform.
+
+Fokus ligger på att utveckla en prototyp innehållande en låsenhet samt tillhörande mobilapplikation för privatpersoner. Detta görs då ett låssystem bestående av ett större antal låsenheter eller ett större antal användare till mobilapplikationen ökar komplexiteten för hela projektet. Ett sådant låssystem kommer också ställa andra krav på lösningen än de krav vilka ställts då målgruppen för produkten är privatpersoner.
+
+Mobilapplikationen begränsas till endast Android eftersom det är lättillgängligt, välkänt och lämpligt för användningsområdet. Denna avgränsning kommer också naturligt av att det bara finns stöd för NFC hos ett fåtal telefoner där merparten av dem är baserade på Android\parencite{online:NFC_WORLD}.
+
+Låsenheten baseras på en mikrokontroller ur Arduino-plattformen då plattformen är användarvänlig \parencite{book:McRobert}, har en relativt låg prisbild samt att flertalet källkodsbibliotek finns vilka kan underlätta implementeringen av låsenheten. Vidare har Arduino-plattformen stöd för NFC i form av ett färdigutvecklat påstickskort, en så kallad sköld\footnote{Från engelskans shield}, med tillhörande källkodsbibliotek.
+
 
 \section{Metod}
 I den initiala fasen genomförs en analys från användarens perspektiv där de krav användaren kan ställa på prototypen listas. Dessa krav utformas sedan från låssystemets perspektiv och sammanställs till en kravspecifikation. Utifrån kravspecifikationen väljs de material, det vill säga de fysiska delarna vilken prototypen utgörs av, vilka är mest lämpade för utformningen av prototypen.\\
